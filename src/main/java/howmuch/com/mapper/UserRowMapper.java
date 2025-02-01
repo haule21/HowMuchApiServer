@@ -14,6 +14,7 @@ public class UserRowMapper implements org.springframework.jdbc.core.RowMapper<Us
         user.setName(rs.getString("Name"));
         user.setStoreNumber(rs.getString("StoreNumber"));
         user.setROLE(rs.getString("ROLE"));
+        user.setEmail(rs.getString("Email"));
         user.setSubscriptionId(rs.getString("SubscriptionId"));
         user.setCreateDate(rs.getDate("CreateDate"));
         user.setUpdateDate(rs.getDate("UpdateDate"));

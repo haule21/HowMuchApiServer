@@ -1,5 +1,10 @@
 package howmuch.com.service;
 
+import java.io.IOException;
+import java.util.Map;
+
+import howmuch.com.api.AppleInAppPurchaseRequest;
+
 public interface AppleReceiptService {
-	boolean verifyReceipt(String receiptData);
+	Map<String, Object> verifyReceipt(AppleInAppPurchaseRequest receiptRequest) throws IOException, InterruptedException;
 }

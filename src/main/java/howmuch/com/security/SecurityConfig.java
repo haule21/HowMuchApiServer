@@ -1,5 +1,7 @@
 package howmuch.com.security;
 
+import java.util.Collections;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -13,9 +15,15 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
 
 import howmuch.com.dto.UsersDTO;
 import howmuch.com.repository.UserRepository;
+import jakarta.servlet.http.HttpServletRequest;
 
 @Configuration
 @EnableWebSecurity
@@ -31,25 +39,64 @@ public class SecurityConfig {
     
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
+		 CsrfTokenRequestAttributeHandler requestHandler = new CsrfTokenRequestAttributeHandler();
+	        requestHandler.setCsrfRequestAttributeName("_csrf");
+	        
 		http
 			.authorizeHttpRequests((authorizeRequests) ->
 				authorizeRequests
-					.requestMatchers("/api/register", "/api/login", "/error").permitAll()
+					.requestMatchers(
+							"/api/register", 
+							"/api/login", 
+							"/api/findPw",
+							"/api/sendverifyemail",
+							"/api/validationcheckemail",
+							"/api/mailCheck",
+							"/error").permitAll()
 					.requestMatchers("/api/unit/**").hasRole("USER")
 					.requestMatchers("/api/Ingredients/**").hasRole("USER")
-					.requestMatchers("/api/margin/**").hasRole("ADMIN")
+					.requestMatchers("/api/margin/**").hasRole("USER")
 					.requestMatchers("/api/recipe/**").hasRole("USER")
 					.requestMatchers("/api/source/**").hasRole("USER")
-					.requestMatchers("/api/stock/**").hasRole("ADMIN")
+					.requestMatchers("/api/subscription/**").hasRole("USER")
+					.requestMatchers("/api/stock/**").hasRole("USER")
 					.anyRequest()
 					.authenticated()
-			);
+			)
+			.logout((logout) -> logout.logoutUrl("/api/logout"));
 		
 		return http.
 				sessionManagement(sessionManagementCustomizer -> sessionManagementCustomizer 
-		                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)).
-				csrf(AbstractHttpConfigurer::disable).
-				build();
+		                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
+				.cors((cors) -> cors.configurationSource(new CorsConfigurationSource() {
+                    @Override
+                    public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
+                        CorsConfiguration config = new CorsConfiguration();
+                        config.setAllowedOrigins(Collections.singletonList("http://localhost:8080"));
+                        config.setAllowedMethods(Collections.singletonList("*"));
+                        config.setAllowCredentials(true);
+                        config.setAllowedHeaders(Collections.singletonList("*"));
+                        config.setMaxAge(3600L);
+                        return config;
+                    }
+                })).
+				csrf((csrf) -> csrf
+                        // CSRF 토큰 요청 핸들러 설정
+                        .csrfTokenRequestHandler(requestHandler)
+                        // /register 경로에 대해 CSRF 보호 비활성화
+                        .ignoringRequestMatchers(
+                        		"/api/register", 
+                        		"/api/findPw", 
+                        		"/api/login",
+                        		"/api/sendverifyemail",
+    							"/api/validationcheckemail",
+    							"/api/mailCheck"
+                        )
+                        // CSRF 토큰을 쿠키로 저장, HttpOnly 설정 비활성화
+                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                )
+				.addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
+				.build();
 	}
 	
 	@Bean

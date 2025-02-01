@@ -1,5 +1,8 @@
 package howmuch.com.service;
 
+import java.io.IOException;
+import java.util.Map;
+
 public interface GooglePlayService {
-	boolean isSubscriptionActive(String packageName, String subscriptionId, String purchaseToken);
+	Map<String, Object> isSubscriptionActive(String packageName, String subscriptionId, String purchaseToken) throws IOException;
 }

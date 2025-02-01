@@ -24,8 +24,8 @@ public class IngredientRepository {
     	String procedureName = "sp_ADD_INGREDIENT_BY_USERID";
     	Map<String, Object> result = new HashMap<String, Object>();
     	try {
-    		jdbcTemplate.update("EXEC " + procedureName + " @UserId = ?, @IngredientName = ?, @UnitValue = ?, @UnitName = ?, @Price = ?",
-            		ingredient.getUserId(), ingredient.getIngredientName(), ingredient.getUnitValue(), ingredient.getUnitName(), ingredient.getPrice());
+    		jdbcTemplate.update("EXEC " + procedureName + " @UserId = ?, @IngredientName = ?, @UnitValue = ?, @UnitKey = ?, @Price = ?",
+            		ingredient.getUserId(), ingredient.getIngredientName(), ingredient.getUnitValue(), ingredient.getUnitKey(), ingredient.getPrice());
         	
         	result.put("message", "Success");
         	result.put("state", true);

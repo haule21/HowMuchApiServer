@@ -20,6 +20,7 @@ public class UsersDTO {
 	private String StoreNumber;
 	private String ROLE;
 	private String SubscriptionId;
+	private String Email;
 	private Date CreateDate;
 	private Date UpdateDate;
 	private Date DeleteDate;

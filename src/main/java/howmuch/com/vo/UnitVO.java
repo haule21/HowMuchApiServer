@@ -16,6 +16,6 @@ public class UnitVO {
 	private String UnitName;
 	@JsonProperty("Value")
 	private Float Value;
-	@JsonProperty("Desc")
+	@JsonProperty("Description")
 	private String Description;
 }

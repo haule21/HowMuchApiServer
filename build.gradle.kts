@@ -1,5 +1,4 @@
 plugins {
-	war
 	java
 	id("org.springframework.boot") version "3.3.4"
 	id("io.spring.dependency-management") version "1.1.6"
@@ -7,7 +6,6 @@ plugins {
 
 group = "howmuch.group"
 version = "0.0.1-SNAPSHOT"
-apply(plugin = "war")
 
 java {
 	toolchain {
@@ -26,7 +24,8 @@ repositories {
 }
 
 dependencies {
-	implementation("com.google.api-client:google-api-client:2.4.0")
+	implementation("org.springframework.boot:spring-boot-starter-mail")
+	implementation("com.google.api-client:google-api-client:1.25.0")
 	implementation("com.google.oauth-client:google-oauth-client-jetty:1.37.0")
 	implementation("com.google.apis:google-api-services-androidpublisher:v3-rev142-1.25.0")
 	implementation("org.springframework.boot:spring-boot-starter-data-jdbc")
@@ -45,12 +44,4 @@ dependencies {
 
 tasks.withType<Test> {
 	useJUnitPlatform()
-}
-
-tasks.war {
-    archiveFileName.set("howmuch.war")
-}
-
-tasks.bootWar{
-	archiveFileName.value("howmuch.war")
 }

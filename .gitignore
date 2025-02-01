@@ -14,3 +14,4 @@ src/test/java/howmuch/DbTest.java
 src/test/java/howmuch/HowMuchApplicationTests.java
 src/test/java/howmuch/DbTest.java
 src/test/java/howmuch/HowMuchApplicationTests.java
+build/*

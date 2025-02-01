@@ -15,6 +15,7 @@ public class IngredientRowMapper  implements org.springframework.jdbc.core.RowMa
 		ingredient.setUnitKey(rs.getString("UnitKey"));
 		ingredient.setUnitName(rs.getString("UnitName"));
 		ingredient.setPrice(rs.getFloat("Price"));
+		ingredient.setPricePerUnit(rs.getFloat("PricePerUnit"));
         return ingredient;
     }
 }

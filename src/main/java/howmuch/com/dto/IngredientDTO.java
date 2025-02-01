@@ -13,4 +13,5 @@ public class IngredientDTO {
 	private String UnitKey;
 	private String UnitName;
 	private Float Price;
+	private Float PricePerUnit;
 }

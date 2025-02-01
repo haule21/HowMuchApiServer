@@ -11,6 +11,10 @@ public class UserVO {
 	private String UserId;
 	@JsonProperty("Password")
 	private String Password;
+	@JsonProperty("Name")
+	private String Name;
+	@JsonProperty("Email")
+	private String Email;
 	
 	public UserVO() {
 	}

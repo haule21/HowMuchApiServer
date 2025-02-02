@@ -47,10 +47,6 @@ public class MainController {
 
     @PostMapping("/login")
     public Map<String, Object> login(@RequestBody UserVO userVO, HttpServletRequest req, HttpServletResponse res) {
-    	System.out.println("==================================================================");
-    	System.out.println(userVO.getUserId());
-    	System.out.println(userVO.getPassword());
-    	System.out.println("==================================================================");
     	UsernamePasswordAuthenticationToken authenticationToken =
             new UsernamePasswordAuthenticationToken(userVO.getUserId(), userVO.getPassword());
 
@@ -73,11 +69,6 @@ public class MainController {
     @PostMapping("/register")
     public Map<String, Object> register(@RequestBody UserVO userVO) {
     	Map<String, Object> response = new HashMap<String, Object>();
-    	System.out.println("==================================================================");
-    	System.out.println(userVO.getUserId());
-    	System.out.println(userVO.getPassword());
-    	System.out.println(loginService.getUserByUserId(userVO.getUserId()));
-    	System.out.println("==================================================================");
     	if (loginService.getUserByUserId(userVO.getUserId()) == null) {
     		if (loginService.validateEmail(userVO.getEmail()) == null) {
     			loginService.createUser(userVO.getUserId(), userVO.getPassword(), userVO.getName(), userVO.getEmail());

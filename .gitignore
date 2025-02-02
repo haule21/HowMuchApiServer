@@ -1,4 +1,5 @@
 src/main/resources/*
+bin/main/howmuchAPIServer.keystore.p12
 .gradle*
 bin/main/testvision01-13aa4b7c04e3.json
 bin/test/howmuch/DbTest.class

@@ -2,7 +2,7 @@
 
 마진요정 
 <br/>
-Mobile App Backend Server 입니다.
+Mobile App API Server 입니다.
 <br/>
 <br/>
 환경:

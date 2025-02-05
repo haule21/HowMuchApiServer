@@ -33,6 +33,7 @@ public class UnitRepository {
         	result.put("message", "Success");
         	result.put("state", true);
         } catch (DataAccessException  e) {
+        	// 2개 이상 상위 단위를 갖는 단위를 만들 수 없습니다.
             result.put("message", e.getMessage());
         	result.put("state", false);
         }
@@ -52,6 +53,7 @@ public class UnitRepository {
         	result.put("message", "Success");
         	result.put("state", true);
         } catch (DataAccessException  e) {
+        	// 2개 이상 상위 단위를 갖는 단위를 만들 수 없습니다.
             result.put("message", e.getMessage());
         	result.put("state", false);
         }

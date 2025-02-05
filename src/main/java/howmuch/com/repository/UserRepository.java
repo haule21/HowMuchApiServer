@@ -44,9 +44,6 @@ public class UserRepository {
     public UsersDTO findByUserId(String userId) {
     	String procedureName = "sp_FIND_USER_BY_USERID ?";
         List<UsersDTO> users = jdbcTemplate.query(procedureName, new UserRowMapper(), userId);
-        System.out.println("==================================================================");
-    	System.out.println(users);
-    	System.out.println("==================================================================");
         return users.isEmpty() ? null : users.get(0);
     }
     

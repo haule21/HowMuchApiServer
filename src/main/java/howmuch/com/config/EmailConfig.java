@@ -42,7 +42,6 @@ public class EmailConfig {
 
     @Bean
     public JavaMailSender javaMailSender() {
-    	System.out.println("JavaMailSender Config!");
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
         mailSender.setHost(host);
         mailSender.setPort(port);

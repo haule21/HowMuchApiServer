@@ -23,8 +23,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import howmuch.com.common.RandomCreateManager;
 import howmuch.com.dto.MailDTO;
 import howmuch.com.dto.UsersDTO;
+import howmuch.com.service.AccountService;
 import howmuch.com.service.LoginService;
 import howmuch.com.vo.EmailUserIdVO;
 import howmuch.com.vo.EmailVO;
@@ -44,6 +46,8 @@ public class MainController {
     private AuthenticationManager authenticationManager;
 	@Autowired
 	private LoginService loginService;
+	@Autowired
+	private AccountService accountService;
 
     @PostMapping("/login")
     public Map<String, Object> login(@RequestBody UserVO userVO, HttpServletRequest req, HttpServletResponse res) {
@@ -103,7 +107,7 @@ public class MainController {
     public Map<String, Object> sendVerifyEmail(@RequestBody EmailVO emailVO, HttpServletRequest req) {
     	Map<String, Object> response = new HashMap<String, Object>();
     	
-    	String verifyCode = getValidateCode();
+    	String verifyCode = RandomCreateManager.getValidateCode();
     	HttpSession session = req.getSession();
     	session.setAttribute("VerifyCode", verifyCode);
     	MailDTO mailDTO = new MailDTO();
@@ -168,7 +172,7 @@ public class MainController {
             response.put("state", false);
     	} else {
     		if (user.getUserId() == emailUserIdVO.getUserId()) {
-    			String tempPassword = getTmpPassword();
+    			String tempPassword = RandomCreateManager.getTmpPassword();
         		loginService.modifyUser(user.getUserId(), tempPassword, user.getName(), user.getEmail());
         		MailDTO mail = new MailDTO();
         		mail.setTo(emailUserIdVO.getUserId());
@@ -204,31 +208,22 @@ public class MainController {
 
         return response;
     }
-    public String getTmpPassword() {
-        char[] charSet = new char[]{ '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-                'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N',
-                'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '!', '@', '#', '$', '%', '^'};
-
-        String newPassword = "";
-
-        for (int i = 0; i < 10; i++) {
-            int idx = (int) (charSet.length * Math.random());
-            newPassword += charSet[idx];
-        }
-
-        return newPassword;
-    }
     
-    public String getValidateCode() {
-        char[] charSet = new char[]{ '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
+    @PostMapping("/deleteaccount")
+    public Map<String, Object> deleteUser(@AuthenticationPrincipal UserDetails userDetails, Authentication authentication, HttpServletRequest request, HttpServletResponse res) {
+    	Map<String, Object> response = new HashMap<String, Object>();
+    	Map<String, Object> deleteState = accountService.DeleteUser(userDetails.getUsername());
+    	if ((boolean)deleteState.get("state")) {
+    		SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
+        	logoutHandler.logout(request, res, authentication);
+    		response.put("message", "Delete Account Success.");
+            response.put("state", true);
+    	} else {
+    		response.put("message", "Delete Fail.");
+    		response.put("state", false);
+    	}
+    	
 
-        String code = "";
-
-        for (int i = 0; i < 6; i++) {
-            int idx = (int) (charSet.length * Math.random());
-            code += charSet[idx];
-        }
-
-        return code;
+        return response;
     }
 }

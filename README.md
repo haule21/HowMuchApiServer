@@ -5,9 +5,6 @@
  - Java 21
  - Sql Server 2019
  - Gradle
-   
-## Project Period
-- 1 week
 
 ## Description
 - SpringBoot로 개발한 마진요정 앱 API 서버 입니다.

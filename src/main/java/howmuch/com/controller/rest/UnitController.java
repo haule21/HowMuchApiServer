@@ -68,9 +68,6 @@ public class UnitController {
 	@GetMapping("/getallunit")
 	@PreAuthorize("hasRole('USER')")
     public Map<String, Object> GetAllUnit(@AuthenticationPrincipal UserDetails userDetails) {
-		System.out.println("==================================================================");
-    	System.out.println(userDetails.getUsername());
-    	System.out.println("==================================================================");
 		Map<String, Object> response = new HashMap<String, Object>();
 		if (userDetails.getUsername() == null) {
 			response.put("result", null);

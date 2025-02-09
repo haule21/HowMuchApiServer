@@ -2,13 +2,13 @@ package howmuch.com.security;
 
 import java.util.Collections;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -22,16 +22,18 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
 import howmuch.com.dto.UsersDTO;
+import howmuch.com.handler.CustomAuthenticationProvider;
 import howmuch.com.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 
 @Configuration
 @EnableWebSecurity
-public class SecurityConfig {
+public class SecurityConfig { 
 	
+	@Autowired
+    private CustomAuthenticationProvider authProvider;
 	private final UserRepository userRepository;
 	private final UserDetailsService userDetailsService;
-
     public SecurityConfig(UserDetailsService userDetailsService, UserRepository userRepository) {
     	this.userDetailsService = userDetailsService;
         this.userRepository = userRepository;
@@ -98,6 +100,23 @@ public class SecurityConfig {
 				.addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
 				.build();
 	}
+	
+//	@Bean
+//	public AuthenticationSuccessHandler authenticationSuccessHandler() {
+//	   return new CustomAuthenticationSuccessHandler();
+//	}
+//
+//	@Bean
+//	public AccessDeniedHandler accessDeniedHandler() {
+//	   return new CustomAccessDeniedHandler();
+//	}
+	@Bean
+    public AuthenticationManager authManager(HttpSecurity http) throws Exception {
+        AuthenticationManagerBuilder authenticationManagerBuilder = 
+            http.getSharedObject(AuthenticationManagerBuilder.class);
+        authenticationManagerBuilder.authenticationProvider(authProvider);
+        return authenticationManagerBuilder.build();
+    }
 	
 	@Bean
     public UserDetailsService userDetailsService() {

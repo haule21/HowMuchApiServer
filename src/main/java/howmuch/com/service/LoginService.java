@@ -15,5 +15,7 @@ public interface LoginService {
     public void modifyUser(String userId, String password, String name, String email);
     public void createUser(String userId, String password, String name, String email);
     public void sendMail(MailDTO mailDTO);
+    public void modifyLoginFailNum(String userId);
+    public void modifyLoginFailNumReset(String userId);
     public UsersDTO validateEmail(String email);
 }

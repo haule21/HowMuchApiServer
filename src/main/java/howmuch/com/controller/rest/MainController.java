@@ -4,15 +4,19 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
+import javax.naming.AuthenticationException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.MailException;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.security.web.context.SecurityContextRepository;
@@ -51,23 +55,36 @@ public class MainController {
 
     @PostMapping("/login")
     public Map<String, Object> login(@RequestBody UserVO userVO, HttpServletRequest req, HttpServletResponse res) {
-    	UsernamePasswordAuthenticationToken authenticationToken =
-            new UsernamePasswordAuthenticationToken(userVO.getUserId(), userVO.getPassword());
-
-		Authentication authentication = authenticationManager.authenticate(authenticationToken);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        
-        HttpSession session = req.getSession();
-        session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, SecurityContextHolder.getContext());
-        
-        if (authentication != null) {
-            System.out.println("Authenticated user: " + authentication.getName());
-            System.out.println("Granted Authorities: " + authentication.getAuthorities());
-        }
-        Map<String, Object> response = new HashMap<String, Object>();
-        response.put("message", "Sucess Login");
-        response.put("state", true);
-        return response;
+    	Map<String, Object> response = new HashMap<String, Object>();
+    	try {
+    		UsernamePasswordAuthenticationToken authenticationToken =
+    	            new UsernamePasswordAuthenticationToken(userVO.getUserId(), userVO.getPassword());
+    		// System.out.println(authenticationToken.toString());
+			Authentication authentication = authenticationManager.authenticate(authenticationToken);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            
+            HttpSession session = req.getSession();
+            session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, SecurityContextHolder.getContext());
+            
+            if (authentication != null) {
+                System.out.println("Authenticated user: " + authentication.getName());
+                System.out.println("Granted Authorities: " + authentication.getAuthorities());
+            }
+            loginService.modifyLoginFailNumReset(userVO.getUserId());
+            response.put("message", "Sucess Login");
+            response.put("state", true);
+    	} catch (UsernameNotFoundException ex) {
+    		response.put("message", "잘못된 사용자 정보입니다.");
+            response.put("state", false);
+    	} catch (LockedException ex) {
+    		response.put("message", "계정이 잠겨있습니다. 패스워드 찾기를 통해 초기화 하여주세요.");
+            response.put("state", false);
+    	} catch (org.springframework.security.core.AuthenticationException ex) {
+    		loginService.modifyLoginFailNum(userVO.getUserId());
+    		response.put("message", "잘못된 사용자 정보입니다.");
+            response.put("state", false);
+    	}
+    	return response;
     }
     
     @PostMapping("/register")

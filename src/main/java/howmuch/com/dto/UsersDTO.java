@@ -21,6 +21,7 @@ public class UsersDTO {
 	private String ROLE;
 	private String SubscriptionId;
 	private String Email;
+	private Integer LoginFailNum;
 	private Date CreateDate;
 	private Date UpdateDate;
 	private Date DeleteDate;

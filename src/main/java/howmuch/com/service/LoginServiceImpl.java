@@ -64,6 +64,16 @@ public class LoginServiceImpl implements LoginService {
     }
 	
 	@Override
+    public void modifyLoginFailNum(String userId) {
+        userRepository.modifyLoginFailNum(userId);  // 데이터베이스에 저장
+    }
+	
+	@Override
+    public void modifyLoginFailNumReset(String userId) {
+        userRepository.modifyLoginFailNumReset(userId);  // 데이터베이스에 저장
+    }
+	
+	@Override
 	public void sendMail(MailDTO mailDTO) {	
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setTo(mailDTO.getTo());

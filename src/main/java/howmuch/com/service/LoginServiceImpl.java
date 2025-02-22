@@ -43,7 +43,7 @@ public class LoginServiceImpl implements LoginService {
         user.setName(name);
         user.setEmail(email);
         user.setStoreNumber(null);
-        user.setROLE("GUEST");
+        user.setROLE("USER");
         user.setSubscriptionId(null);
         
         userRepository.save(user);  // 데이터베이스에 저장

@@ -13,8 +13,8 @@ public interface RecipeService {
 	List<RecipeDTO> getAllRecipe(String userId);
 	List<RecipeDetailDTO> allRecipeDetailByUserIdRecipeKey(String userId, String recipeKey);
 	List<IngredientSourceDTO> allIngredientSource(String userId);
-	Map<String, Object> modify(String userId, RecipeVO source);
-	Map<String, Object> save(String userId, RecipeVO source);
-	Map<String, Object> modifyDetail(String userId, RecipeDetailVO recipeDetail);
-	Map<String, Object> saveDetail(String userId, RecipeDetailVO recipeDetail);
+	int modify(String userId, RecipeVO source);
+	int save(String userId, RecipeVO source);
+	int modifyDetail(String userId, RecipeDetailVO recipeDetail);
+	int saveDetail(String userId, RecipeDetailVO recipeDetail);
 }

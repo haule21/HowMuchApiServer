@@ -5,9 +5,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.session.SessionAuthenticationException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import howmuch.com.dto.ApiResponse;
 import howmuch.com.dto.IngredientDTO;
 import howmuch.com.service.IngredientService;
 import howmuch.com.vo.IngredientVO;
@@ -28,45 +32,38 @@ public class IngredientController {
 	
 	@GetMapping("/getallingredient")
 	@PreAuthorize("hasRole('USER')")
-    public Map<String, Object> GetAllIngredient(@AuthenticationPrincipal UserDetails userDetails) {
-		Map<String, Object> response = new HashMap<String, Object>();
+    public ResponseEntity<ApiResponse<List<IngredientDTO>>> GetAllIngredient(@AuthenticationPrincipal UserDetails userDetails) {
+		ApiResponse<List<IngredientDTO>> response;
 		if (userDetails.getUsername() == null) {
-			response.put("result", null);
-	        response.put("message", "Log in first.");
-	        response.put("state", false);
+			throw new SessionAuthenticationException("먼저 로그인하여 주세요.");
 		} else {
 			List<IngredientDTO> ingredients = ingredientService.getAllIngredient(userDetails.getUsername());
-	        response.put("result", ingredients);
-	        response.put("message", "Sucess");
-	        response.put("state", true);
+	        response = new ApiResponse<>(HttpStatus.OK, "Get Ingredients Success", ingredients, null);
+	        return ResponseEntity.ok(response);
 		}   
-		
-		return response;
     }
 	
 	@PostMapping("/modifyingredient")
-    public Map<String, Object> ModifyUnit(@RequestBody IngredientVO ingredientVO, @AuthenticationPrincipal UserDetails userDetails) {
-		Map<String, Object> response = new HashMap<String, Object>();
+    public ResponseEntity<ApiResponse<Void>> ModifyUnit(@RequestBody IngredientVO ingredientVO, @AuthenticationPrincipal UserDetails userDetails) {
+		ApiResponse<Void> response;
 		if (userDetails.getUsername() == null) {
-	        response.put("message", "Log in first.");
-	        response.put("state", false);
+			throw new SessionAuthenticationException("먼저 로그인하여 주세요.");
 		} else {
-			response = ingredientService.modifyIngredient(userDetails.getUsername(), ingredientVO);
+			ingredientService.modifyIngredient(userDetails.getUsername(), ingredientVO);
+			response = new ApiResponse<>(HttpStatus.OK, "Modify Ingredients Success", null, null);
+			return ResponseEntity.ok(response);
 		}   
-		
-		return response;
     }
 	
 	@PostMapping("/addingredient")
-    public Map<String, Object> AddUnit(@RequestBody IngredientVO ingredientVO, @AuthenticationPrincipal UserDetails userDetails) {
-		Map<String, Object> response = new HashMap<String, Object>();
+    public ResponseEntity<ApiResponse<Void>> AddUnit(@RequestBody IngredientVO ingredientVO, @AuthenticationPrincipal UserDetails userDetails) {
+		ApiResponse<Void> response;
 		if (userDetails.getUsername() == null) {
-	        response.put("message", "Log in first.");
-	        response.put("state", false);
+			throw new SessionAuthenticationException("먼저 로그인하여 주세요.");
 		} else {
-			response = ingredientService.addIngredient(userDetails.getUsername(), ingredientVO);
+			ingredientService.addIngredient(userDetails.getUsername(), ingredientVO);
+			response = new ApiResponse<>(HttpStatus.OK, "Add Ingredients Success", null, null);
+			return ResponseEntity.ok(response);
 		}   
-		
-		return response; 
     }	
 }

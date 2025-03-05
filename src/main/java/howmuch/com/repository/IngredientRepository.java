@@ -20,38 +20,18 @@ public class IngredientRepository {
     }
     
     // ingredient 저장
-    public Map<String, Object> save(IngredientDTO ingredient) {
+    public int save(IngredientDTO ingredient) {
     	String procedureName = "sp_ADD_INGREDIENT_BY_USERID";
-    	Map<String, Object> result = new HashMap<String, Object>();
-    	try {
-    		jdbcTemplate.update("EXEC " + procedureName + " @UserId = ?, @IngredientName = ?, @UnitValue = ?, @UnitKey = ?, @Price = ?",
-            		ingredient.getUserId(), ingredient.getIngredientName(), ingredient.getUnitValue(), ingredient.getUnitKey(), ingredient.getPrice());
-        	
-        	result.put("message", "Success");
-        	result.put("state", true);
-        } catch (DataAccessException  e) {
-            result.put("message", e.getMessage());
-        	result.put("state", false);
-        }
-    	
-    	return result;
+		return jdbcTemplate.update("EXEC " + procedureName + " @UserId = ?, @IngredientName = ?, @UnitValue = ?, @UnitKey = ?, @Price = ?",
+        		ingredient.getUserId(), ingredient.getIngredientName(), ingredient.getUnitValue(), ingredient.getUnitKey(), ingredient.getPrice());
     }
 
     // ingredient 수정
-    public Map<String, Object> modify(IngredientDTO ingredient) {
+    public int modify(IngredientDTO ingredient) {
     	String procedureName = "sp_MODIFY_INGREDIENT_BY_USERID_INGREDIENTKEY";
-    	Map<String, Object> result = new HashMap<String, Object>();
-    	try {
-    		jdbcTemplate.update("EXEC " + procedureName + " @UserId = ?, @IngredientKey = ?, @IngredientName = ?, @UnitValue = ?, @UnitKey = ?, @Price = ?",
-            		ingredient.getUserId(), ingredient.getIngredientKey(), ingredient.getIngredientName(), ingredient.getUnitValue(), ingredient.getUnitKey(), ingredient.getPrice());
-        	
-        	result.put("message", "Success");
-        	result.put("state", true);
-        } catch (DataAccessException  e) {
-            result.put("message", e.getMessage());
-        	result.put("state", false);
-        }
-        return result;
+    	
+    	return jdbcTemplate.update("EXEC " + procedureName + " @UserId = ?, @IngredientKey = ?, @IngredientName = ?, @UnitValue = ?, @UnitKey = ?, @Price = ?",
+        		ingredient.getUserId(), ingredient.getIngredientKey(), ingredient.getIngredientName(), ingredient.getUnitValue(), ingredient.getUnitKey(), ingredient.getPrice());
     }
     
     public List<IngredientDTO> allIngredientByUserId(String userId) {

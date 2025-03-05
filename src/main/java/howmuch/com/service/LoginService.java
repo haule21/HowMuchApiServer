@@ -11,11 +11,11 @@ import howmuch.com.dto.UsersDTO;
 public interface LoginService {
     // 사용자를 username으로 조회하는 예시
     public UsersDTO getUserByUserId(String userId);
-    public void saveUser(String userId, String password, String name, String email);
-    public void modifyUser(String userId, String password, String name, String email);
-    public void createUser(String userId, String password, String name, String email);
-    public void sendMail(MailDTO mailDTO);
-    public void modifyLoginFailNum(String userId);
-    public void modifyLoginFailNumReset(String userId);
+    public int saveUser(String userId, String password, String name, String email);
+    public int modifyUser(String userId, String password, String name, String email);
+    public int createUser(String userId, String password, String name, String email);
+    public Boolean sendMail(MailDTO mailDTO);
+    public int modifyLoginFailNum(String userId);
+    public int modifyLoginFailNumReset(String userId);
     public UsersDTO validateEmail(String email);
 }

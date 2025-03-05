@@ -27,7 +27,7 @@ public class UnitServiceImpl implements UnitService {
 	}
 	
 	@Override
-	public Map<String, Object> addUnit(String userId, UnitVO unitVO) {
+	public int addUnit(String userId, UnitVO unitVO) {
 		UnitDTO unitDTO = new UnitDTO();
 		unitDTO.setUserId(userId);
 		unitDTO.setParentUnitKey(unitVO.getParentUnitKey());
@@ -38,7 +38,7 @@ public class UnitServiceImpl implements UnitService {
 		return unitRepository.save(unitDTO);
 	}
 	@Override
-	public Map<String, Object> modifyUnit(String userId, UnitVO unitVO) {
+	public int modifyUnit(String userId, UnitVO unitVO) {
 		UnitDTO unitDTO = new UnitDTO();
 		unitDTO.setUserId(userId);
 		unitDTO.setUnitKey(unitVO.getUnitKey());

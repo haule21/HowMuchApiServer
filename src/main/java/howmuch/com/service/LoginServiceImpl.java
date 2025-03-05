@@ -36,7 +36,7 @@ public class LoginServiceImpl implements LoginService {
 
 	@Override
     // 새로운 사용자 추가 예시
-    public void createUser(String userId, String password, String name, String email) {
+    public int createUser(String userId, String password, String name, String email) {
 		UsersDTO user = new UsersDTO();
         user.setUserId(userId);
         user.setPassword(new BCryptPasswordEncoder().encode(password));
@@ -46,11 +46,11 @@ public class LoginServiceImpl implements LoginService {
         user.setROLE("USER");
         user.setSubscriptionId(null);
         
-        userRepository.save(user);  // 데이터베이스에 저장
+        return userRepository.save(user);  // 데이터베이스에 저장
     }
 	
 	@Override
-    public void saveUser(String userId, String password, String name, String email) {
+    public int saveUser(String userId, String password, String name, String email) {
 		UsersDTO user = new UsersDTO();
         user.setUserId(userId);
         user.setPassword(new BCryptPasswordEncoder().encode(password));
@@ -60,21 +60,21 @@ public class LoginServiceImpl implements LoginService {
         user.setROLE("USER");
         user.setSubscriptionId(null);
         
-        userRepository.save(user);  // 데이터베이스에 저장
+        return userRepository.save(user);  // 데이터베이스에 저장
     }
 	
 	@Override
-    public void modifyLoginFailNum(String userId) {
-        userRepository.modifyLoginFailNum(userId);  // 데이터베이스에 저장
+    public int modifyLoginFailNum(String userId) {
+        return userRepository.modifyLoginFailNum(userId);  // 데이터베이스에 저장
     }
 	
 	@Override
-    public void modifyLoginFailNumReset(String userId) {
-        userRepository.modifyLoginFailNumReset(userId);  // 데이터베이스에 저장
+    public int modifyLoginFailNumReset(String userId) {
+        return userRepository.modifyLoginFailNumReset(userId);  // 데이터베이스에 저장
     }
 	
 	@Override
-	public void sendMail(MailDTO mailDTO) {	
+	public Boolean sendMail(MailDTO mailDTO) {	
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setTo(mailDTO.getTo());
         mailMessage.setSubject(mailDTO.getTitle());
@@ -82,13 +82,14 @@ public class LoginServiceImpl implements LoginService {
         mailMessage.setFrom(from);
         mailMessage.setReplyTo(from);
         javaMailSender.send(mailMessage);
+        return true;
 	}
 	@Override
 	public UsersDTO validateEmail(String email) {
 		return userRepository.validateEmail(email);
 	}
 	@Override
-	public void modifyUser(String userId, String password, String name, String email) {
+	public int modifyUser(String userId, String password, String name, String email) {
 		UsersDTO user = new UsersDTO();
         user.setUserId(userId);
         user.setPassword(new BCryptPasswordEncoder().encode(password));
@@ -98,7 +99,7 @@ public class LoginServiceImpl implements LoginService {
         user.setROLE("GUEST");
         user.setSubscriptionId(null);
         
-        userRepository.modifyUser(user);  // 데이터베이스에 저장
+        return userRepository.modifyUser(user);  // 데이터베이스에 저장
 	}
 	
 }

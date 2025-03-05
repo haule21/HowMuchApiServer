@@ -36,12 +36,8 @@ public class LoggingAspect {
 //    }
 
     @AfterThrowing(pointcut = "execution(* howmuch.com.controller.rest.*.*(..))", throwing = "e")
-    public Map<String, Object> logAfterThrowing(JoinPoint joinPoint, Throwable e) {
+    public void logAfterThrowing(JoinPoint joinPoint, Throwable e) {
         log.error("AfterThrowing: " + joinPoint.getSignature().getName() + " exception: " + e.getMessage());
-        Map<String, Object> result = new HashMap<String, Object>();
-        result.put("message", e.getMessage());
-    	result.put("state", false);
-    	return result;
     }
 
 //    @Around("execution(* howmuch.com.controller.rest.*.*(..))")

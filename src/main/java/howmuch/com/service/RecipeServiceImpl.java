@@ -32,7 +32,7 @@ public class RecipeServiceImpl implements RecipeService {
 		return recipeRepository.allRecipeByUserId(userId);
 	}
 	@Override
-	public Map<String, Object> modify(String userId, RecipeVO recipe) {
+	public int modify(String userId, RecipeVO recipe) {
 		RecipeDTO recipeDTO = new RecipeDTO();
 		recipeDTO.setUserId(userId);
 		recipeDTO.setRecipeKey(recipe.getRecipeKey());
@@ -42,7 +42,7 @@ public class RecipeServiceImpl implements RecipeService {
 		return recipeRepository.modify(recipeDTO);
 	}
 	@Override
-	public Map<String, Object> modifyDetail(String userId, RecipeDetailVO recipeDetail) {
+	public int modifyDetail(String userId, RecipeDetailVO recipeDetail) {
 		RecipeDetailDTO recipeDetailDTO = new RecipeDetailDTO();
 		recipeDetailDTO.setUserId(userId);
 		recipeDetailDTO.setRecipeKey(recipeDetail.getRecipeKey());
@@ -54,7 +54,7 @@ public class RecipeServiceImpl implements RecipeService {
 		return recipeRepository.modifyDetail(recipeDetailDTO);
 	}
 	@Override
-	public Map<String, Object> save(String userId, RecipeVO recipe) {
+	public int save(String userId, RecipeVO recipe) {
 		RecipeDTO recipeDTO = new RecipeDTO();
 		recipeDTO.setUserId(userId);
 		recipeDTO.setRecipeName(recipe.getRecipeName());
@@ -63,7 +63,7 @@ public class RecipeServiceImpl implements RecipeService {
 		return recipeRepository.save(recipeDTO);
 	}
 	@Override
-	public Map<String, Object> saveDetail(String userId, RecipeDetailVO recipeDetail) {
+	public int saveDetail(String userId, RecipeDetailVO recipeDetail) {
 		RecipeDetailDTO recipeDetailDTO = new RecipeDetailDTO();
 		recipeDetailDTO.setUserId(userId);
 		recipeDetailDTO.setRecipeKey(recipeDetail.getRecipeKey());

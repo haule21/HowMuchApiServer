@@ -22,7 +22,7 @@ public class UserRepository {
     }
 
     // 사용자 저장
-    public void save(UsersDTO user) {
+    public int save(UsersDTO user) {
     	String procedureName = "sp_CREATE_USER";
 
         // 저장 프로시저 파라미터 설정
@@ -36,7 +36,7 @@ public class UserRepository {
 //        params.put("SubscriptionId", user.getSubscriptionId());
 
         // 저장 프로시저 실행
-        jdbcTemplate.update("EXEC " + procedureName + " @UserId = ?, @Password = ?, @Name = ?, @Email = ?, @StoreNumber = ?, @ROLE = ?, @SubscriptionId = ?",
+        return jdbcTemplate.update("EXEC " + procedureName + " @UserId = ?, @Password = ?, @Name = ?, @Email = ?, @StoreNumber = ?, @ROLE = ?, @SubscriptionId = ?",
                 user.getUserId(), user.getPassword(), user.getName(), user.getEmail(), user.getStoreNumber(), user.getROLE(), user.getSubscriptionId());
     }
 
@@ -53,7 +53,7 @@ public class UserRepository {
     	return users.isEmpty() ? null : users.get(0);
     }
     
-    public void modifyUser(UsersDTO user) {
+    public int modifyUser(UsersDTO user) {
     	String procedureName = "sp_MODIFY_USER_BY_USERID";
 //    	Map<String, Object> params = new HashMap<String, Object>();
 //        params.put("UserId", user.getUserId());
@@ -65,23 +65,23 @@ public class UserRepository {
 //        params.put("SubscriptionId", user.getSubscriptionId());
 
         // 저장 프로시저 실행
-        jdbcTemplate.update("EXEC " + procedureName + " @UserId = ?, @Password = ?, @Name = ?, @Email = ?",
+        return jdbcTemplate.update("EXEC " + procedureName + " @UserId = ?, @Password = ?, @Name = ?, @Email = ?",
                 user.getUserId(), user.getPassword(), user.getName(), user.getEmail());
     }
     
-    public void modifyLoginFailNum(String userId) {
+    public int modifyLoginFailNum(String userId) {
     	String procedureName = "sp_MODIFY_LOGIN_FAIL_NUM_BY_USERID";
 
         // 저장 프로시저 실행
-        jdbcTemplate.update("EXEC " + procedureName + " @UserId = ?",
+        return jdbcTemplate.update("EXEC " + procedureName + " @UserId = ?",
                 userId);
     }
     
-    public void modifyLoginFailNumReset(String userId) {
+    public int modifyLoginFailNumReset(String userId) {
     	String procedureName = "sp_MODIFY_LOGIN_FAIL_NUM_RESET_BY_USERID";
 
         // 저장 프로시저 실행
-        jdbcTemplate.update("EXEC " + procedureName + " @UserId = ?",
+        return jdbcTemplate.update("EXEC " + procedureName + " @UserId = ?",
                 userId);
     }
    

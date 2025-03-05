@@ -22,44 +22,20 @@ public class UnitRepository {
     }
     
     // Unit 저장
-    public Map<String, Object> save(UnitDTO unit) {
-    	Map<String, Object> result = new HashMap<String, Object>();
+    public int save(UnitDTO unit) {
     	String procedureName = "sp_ADD_UNIT_BY_USERID";
         
-        try {
-        	jdbcTemplate.update("EXEC " + procedureName + " @UserId = ?, @UnitName = ?, @ParentUnitKey = ?, @ParentUnitRelation = ?, @Value = ?, @Description = ?",
+        return jdbcTemplate.update("EXEC " + procedureName + " @UserId = ?, @UnitName = ?, @ParentUnitKey = ?, @ParentUnitRelation = ?, @Value = ?, @Description = ?",
             		unit.getUserId(), unit.getUnitName(), unit.getParentUnitKey(), unit.getParentUnitRelation(), unit.getValue(), unit.getDescription());
-        	
-        	result.put("message", "Success");
-        	result.put("state", true);
-        } catch (DataAccessException  e) {
-        	// 2개 이상 상위 단위를 갖는 단위를 만들 수 없습니다.
-            result.put("message", e.getMessage());
-        	result.put("state", false);
-        }
-        // 저장 프로시저 실행
-        return result;
     }
 
     // Unit 수정
-    public Map<String, Object> modify(UnitDTO unit) {
-    	Map<String, Object> result = new HashMap<String, Object>();
+    public int modify(UnitDTO unit) {
     	String procedureName = "sp_MODIFY_UNIT_BY_USERID_UNITKEY";
 
-        // 저장 프로시저 실행
-        try {
-        	jdbcTemplate.update("EXEC " + procedureName + " @UserId = ?, @UnitKey = ?, @UnitName = ?, @ParentUnitKey = ?, @ParentUnitRelation = ?, @Value = ?, @Description = ?",
+        return jdbcTemplate.update("EXEC " + procedureName + " @UserId = ?, @UnitKey = ?, @UnitName = ?, @ParentUnitKey = ?, @ParentUnitRelation = ?, @Value = ?, @Description = ?",
             		unit.getUserId(), unit.getUnitKey(), unit.getUnitName(), unit.getParentUnitKey(), unit.getParentUnitRelation(), unit.getValue(), unit.getDescription());
-        	result.put("message", "Success");
-        	result.put("state", true);
-        } catch (DataAccessException  e) {
-        	// 2개 이상 상위 단위를 갖는 단위를 만들 수 없습니다.
-            result.put("message", e.getMessage());
-        	result.put("state", false);
-        }
-        // 저장 프로시저 실행
-        return result;
-        
+
     }
     
     public List<UnitDTO> allUnitByUserId(String userId) {

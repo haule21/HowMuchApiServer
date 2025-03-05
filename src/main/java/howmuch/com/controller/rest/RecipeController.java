@@ -5,9 +5,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.session.SessionAuthenticationException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import howmuch.com.dto.ApiResponse;
+import howmuch.com.dto.IngredientDTO;
 import howmuch.com.dto.IngredientSourceDTO;
 import howmuch.com.dto.RecipeDTO;
 import howmuch.com.dto.RecipeDetailDTO;
@@ -35,105 +40,87 @@ public class RecipeController {
 	
 	@GetMapping("/getallrecipe")
 	@PreAuthorize("hasRole('USER')")
-    public Map<String, Object> GetAllRecipe(@AuthenticationPrincipal UserDetails userDetails) {
-		Map<String, Object> response = new HashMap<String, Object>();
+    public ResponseEntity<ApiResponse<List<RecipeDTO>>> GetAllRecipe(@AuthenticationPrincipal UserDetails userDetails) {
+		ApiResponse<List<RecipeDTO>> response;
 		if (userDetails.getUsername() == null) {
-			response.put("result", null);
-	        response.put("message", "Log in first.");
-	        response.put("state", false);
+			throw new SessionAuthenticationException("먼저 로그인하여 주세요.");
 		} else {
 			List<RecipeDTO> recipe = recipeService.getAllRecipe(userDetails.getUsername());
-	        response.put("result", recipe);
-	        response.put("message", "Sucess");
-	        response.put("state", true);
-		}   
-		
-		return response;
+			response = new ApiResponse<>(HttpStatus.OK, "Get Recipe Success", recipe, null);
+	        return ResponseEntity.ok(response);
+		}
     }
 	
 	@GetMapping("/getallrecipedetailingredients")
 	@PreAuthorize("hasRole('USER')")
-    public Map<String, Object> GetAllRecipeDetail(@RequestParam("RecipeKey") String recipeKey, @AuthenticationPrincipal UserDetails userDetails) {
-		Map<String, Object> response = new HashMap<String, Object>();
+    public ResponseEntity<ApiResponse<List<RecipeDetailDTO>>> GetAllRecipeDetail(@RequestParam("RecipeKey") String recipeKey, @AuthenticationPrincipal UserDetails userDetails) {
+		ApiResponse<List<RecipeDetailDTO>> response;
 		if (userDetails.getUsername() == null) {
-			response.put("result", null);
-	        response.put("message", "Log in first.");
-	        response.put("state", false);
+			throw new SessionAuthenticationException("먼저 로그인하여 주세요.");
 		} else {
 			List<RecipeDetailDTO> recipeDetail = recipeService.allRecipeDetailByUserIdRecipeKey(userDetails.getUsername(), recipeKey);
-	        response.put("result", recipeDetail);
-	        response.put("message", "Sucess");
-	        response.put("state", true);
-		}   
-		
-		return response;
+			response = new ApiResponse<>(HttpStatus.OK, "Get RecipeDetail Success", recipeDetail, null);
+	        return ResponseEntity.ok(response);
+		}
     }
 	
 	@GetMapping("/ingredientsource")
 	@PreAuthorize("hasRole('USER')")
-    public Map<String, Object> GetAllIngredientSource(@AuthenticationPrincipal UserDetails userDetails) {
-		Map<String, Object> response = new HashMap<String, Object>();
+    public ResponseEntity<ApiResponse<List<IngredientSourceDTO>>> GetAllIngredientSource(@AuthenticationPrincipal UserDetails userDetails) {
+		ApiResponse<List<IngredientSourceDTO>> response;
 		if (userDetails.getUsername() == null) {
-			response.put("result", null);
-	        response.put("message", "Log in first.");
-	        response.put("state", false);
+			throw new SessionAuthenticationException("먼저 로그인하여 주세요.");
 		} else {
 			List<IngredientSourceDTO> ingredientSource = recipeService.allIngredientSource(userDetails.getUsername());
-	        response.put("result", ingredientSource);
-	        response.put("message", "Sucess");
-	        response.put("state", true);
+			response = new ApiResponse<>(HttpStatus.OK, "Get Ingredient Source Success", ingredientSource, null);
+	        return ResponseEntity.ok(response);
 		}   
-		
-		return response;
     }
 	@PostMapping("/modifyrecipe")
-    public Map<String, Object> ModifyUnit(@RequestBody RecipeVO recipeVO, @AuthenticationPrincipal UserDetails userDetails) {
-		Map<String, Object> response = new HashMap<String, Object>();
+    public ResponseEntity<ApiResponse<Void>> ModifyUnit(@RequestBody RecipeVO recipeVO, @AuthenticationPrincipal UserDetails userDetails) {
+		ApiResponse<Void> response;
 		if (userDetails.getUsername() == null) {
-	        response.put("message", "Log in first.");
-	        response.put("state", false);
+			throw new SessionAuthenticationException("먼저 로그인하여 주세요.");
 		} else {
-			response = recipeService.modify(userDetails.getUsername(), recipeVO);
-		}   
-		
-		return response;
+			recipeService.modify(userDetails.getUsername(), recipeVO);
+			response = new ApiResponse<>(HttpStatus.OK, "Modify Recipe Unit Success", null, null);
+	        return ResponseEntity.ok(response);
+		}
     }
 	
 	@PostMapping("/addrecipe")
-    public Map<String, Object> AddUnit(@RequestBody RecipeVO recipeVO, @AuthenticationPrincipal UserDetails userDetails) {
-		Map<String, Object> response = new HashMap<String, Object>();
+    public ResponseEntity<ApiResponse<Void>> AddUnit(@RequestBody RecipeVO recipeVO, @AuthenticationPrincipal UserDetails userDetails) {
+		ApiResponse<Void> response;
 		if (userDetails.getUsername() == null) {
-	        response.put("message", "Log in first.");
-	        response.put("state", false);
+			throw new SessionAuthenticationException("먼저 로그인하여 주세요.");
 		} else {
-			response = recipeService.save(userDetails.getUsername(), recipeVO);
-		}   
-		
-		return response; 
+			recipeService.save(userDetails.getUsername(), recipeVO);
+			response = new ApiResponse<>(HttpStatus.OK, "Add Recipe Success", null, null);
+			return ResponseEntity.ok(response);
+		}
     }
+	
 	@PostMapping("/modifyrecipedetail")
-    public Map<String, Object> ModifyUnit(@RequestBody RecipeDetailVO recipeDetailVO, @AuthenticationPrincipal UserDetails userDetails) {
-		Map<String, Object> response = new HashMap<String, Object>();
+    public ResponseEntity<ApiResponse<Void>> ModifyUnit(@RequestBody RecipeDetailVO recipeDetailVO, @AuthenticationPrincipal UserDetails userDetails) {
+		ApiResponse<Void> response;
 		if (userDetails.getUsername() == null) {
-	        response.put("message", "Log in first.");
-	        response.put("state", false);
+			throw new SessionAuthenticationException("먼저 로그인하여 주세요.");
 		} else {
-			response = recipeService.modifyDetail(userDetails.getUsername(), recipeDetailVO);
+			recipeService.modifyDetail(userDetails.getUsername(), recipeDetailVO);
+			response = new ApiResponse<>(HttpStatus.OK, "Modify RecipeDetail Success", null, null);
+	        return ResponseEntity.ok(response);
 		}   
-		
-		return response;
     }
 	
 	@PostMapping("/addrecipedetail")
-    public Map<String, Object> AddUnit(@RequestBody RecipeDetailVO recipeDetailVO, @AuthenticationPrincipal UserDetails userDetails) {
-		Map<String, Object> response = new HashMap<String, Object>();
+    public ResponseEntity<ApiResponse<Void>> AddUnit(@RequestBody RecipeDetailVO recipeDetailVO, @AuthenticationPrincipal UserDetails userDetails) {
+		ApiResponse<Void> response;
 		if (userDetails.getUsername() == null) {
-	        response.put("message", "Log in first.");
-	        response.put("state", false);
+			throw new SessionAuthenticationException("먼저 로그인하여 주세요.");
 		} else {
-			response = recipeService.saveDetail(userDetails.getUsername(), recipeDetailVO);
+			recipeService.saveDetail(userDetails.getUsername(), recipeDetailVO);
+			response = new ApiResponse<>(HttpStatus.OK, "Add RecipeDetail Success", null, null);
+	        return ResponseEntity.ok(response);
 		}   
-		
-		return response; 
     }
 }

@@ -39,7 +39,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         if (isCredentialsValid(name, password)) {
             return authenticateAgainstThirdPartyAndGetAuthentication(name, password);
         } else {
-            throw new BadCredentialsException("Invalid username or password");
+            throw new BadCredentialsException("잘못된 사용자 정보입니다.");
         }
     }
 
@@ -60,11 +60,11 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         UsersDTO user = userRepository.findByUserId(username);
         
         if (user == null) {
-        	throw new UsernameNotFoundException("User Not Found");
+        	throw new UsernameNotFoundException("잘못된 사용자 정보입니다.");
         } else {
         	if (new BCryptPasswordEncoder().matches(password, user.getPassword())) {
         		if (user.getLoginFailNum() > 5) {
-            		throw new LockedException("Your account is locked. Please reset it through the password recovery process.");
+            		throw new LockedException("계정이 잠겨있습니다. 패스워드 찾기를 통해 초기화 하여주세요.");
             	} else {
             		return true;
             	}

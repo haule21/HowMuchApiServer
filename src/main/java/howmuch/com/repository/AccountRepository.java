@@ -15,19 +15,8 @@ public class AccountRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
     
-	public Map<String, Object> delete(String userId) {
+	public int delete(String userId) {
     	String procedureName = "sp_DELETE_ACCOUNT";
-    	Map<String, Object> result = new HashMap<String, Object>();
-    	try {
-    		jdbcTemplate.update("EXEC " + procedureName + " @UserId = ?", userId);
-        	
-        	result.put("message", "Success");
-        	result.put("state", true);
-        } catch (DataAccessException  e) {
-            result.put("message", e.getMessage());
-        	result.put("state", false);
-        }
-    	
-    	return result;
+		return jdbcTemplate.update("EXEC " + procedureName + " @UserId = ?", userId);
     }
 }

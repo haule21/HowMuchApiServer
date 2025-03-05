@@ -6,10 +6,14 @@ import java.util.Random;
 
 import javax.naming.AuthenticationException;
 
+import org.apache.ibatis.javassist.bytecode.DuplicateMemberException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.mail.MailException;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -26,10 +30,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import howmuch.com.common.RandomCreateManager;
+import howmuch.com.dto.ApiResponse;
 import howmuch.com.dto.MailDTO;
 import howmuch.com.dto.UsersDTO;
+import howmuch.com.exception.DuplicateEmailException;
+import howmuch.com.exception.DuplicateUserException;
+import howmuch.com.exception.EmailNotFoundException;
+import howmuch.com.exception.InvalidVerifyCodeException;
 import howmuch.com.service.AccountService;
 import howmuch.com.service.LoginService;
 import howmuch.com.vo.EmailUserIdVO;
@@ -54,75 +64,51 @@ public class MainController {
 	private AccountService accountService;
 
     @PostMapping("/login")
-    public Map<String, Object> login(@RequestBody UserVO userVO, HttpServletRequest req, HttpServletResponse res) {
-    	Map<String, Object> response = new HashMap<String, Object>();
-    	try {
-    		UsernamePasswordAuthenticationToken authenticationToken =
-    	            new UsernamePasswordAuthenticationToken(userVO.getUserId(), userVO.getPassword());
-    		// System.out.println(authenticationToken.toString());
-			Authentication authentication = authenticationManager.authenticate(authenticationToken);
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-            
-            HttpSession session = req.getSession();
-            session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, SecurityContextHolder.getContext());
-            
-            if (authentication != null) {
-                System.out.println("Authenticated user: " + authentication.getName());
-                System.out.println("Granted Authorities: " + authentication.getAuthorities());
-            }
-            loginService.modifyLoginFailNumReset(userVO.getUserId());
-            response.put("message", "Sucess Login");
-            response.put("state", true);
-    	} catch (UsernameNotFoundException ex) {
-    		response.put("message", "잘못된 사용자 정보입니다.");
-            response.put("state", false);
-    	} catch (LockedException ex) {
-    		response.put("message", "계정이 잠겨있습니다. 패스워드 찾기를 통해 초기화 하여주세요.");
-            response.put("state", false);
-    	} catch (org.springframework.security.core.AuthenticationException ex) {
-    		loginService.modifyLoginFailNum(userVO.getUserId());
-    		response.put("message", "잘못된 사용자 정보입니다.");
-            response.put("state", false);
-    	}
-    	return response;
+    public ResponseEntity<ApiResponse<Void>> login(@RequestBody UserVO userVO, HttpServletRequest req, HttpServletResponse res) {
+    	ApiResponse<Void> response;
+    	// Map<String, Object> response = new HashMap<String, Object>();
+		UsernamePasswordAuthenticationToken authenticationToken =
+	            new UsernamePasswordAuthenticationToken(userVO.getUserId(), userVO.getPassword());
+		// System.out.println(authenticationToken.toString());
+		Authentication authentication = authenticationManager.authenticate(authenticationToken);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        
+        HttpSession session = req.getSession();
+        session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, SecurityContextHolder.getContext());
+        
+        loginService.modifyLoginFailNumReset(userVO.getUserId());
+        response = new ApiResponse<>(HttpStatus.OK, "Login Success", null, null);
+        return ResponseEntity.ok(response);
     }
     
     @PostMapping("/register")
-    public Map<String, Object> register(@RequestBody UserVO userVO) {
-    	Map<String, Object> response = new HashMap<String, Object>();
+    public ResponseEntity<ApiResponse<Void>> register(@RequestBody UserVO userVO) {
+    	ApiResponse<Void> response;
     	if (loginService.getUserByUserId(userVO.getUserId()) == null) {
     		if (loginService.validateEmail(userVO.getEmail()) == null) {
     			loginService.createUser(userVO.getUserId(), userVO.getPassword(), userVO.getName(), userVO.getEmail());
+    			response = new ApiResponse<>(HttpStatus.OK, "Register Success", null, null);
+    			return ResponseEntity.ok(response);
     		} else {
-    			response.put("message", "Duplicate User");
-                response.put("state", false);
-                return response;
+    			throw new DuplicateEmailException("중복된 이메일 입니다.");
     		}
     	} else {
-    		response.put("message", "Duplicate User");
-            response.put("state", false);
-            return response;
+    		throw new DuplicateUserException("중복된 계정 입니다.");
     	}
-    	
-        response.put("message", "Register User!");
-        response.put("state", true);
-        return response;
     }
     
     @PostMapping("/modifyuser")
-    public Map<String, Object> modifyUser(@RequestBody UserVO userVO, @AuthenticationPrincipal UserDetails userDetails) {
-    	Map<String, Object> response = new HashMap<String, Object>();
-
+    public ResponseEntity<ApiResponse<Void>> modifyUser(@RequestBody UserVO userVO, @AuthenticationPrincipal UserDetails userDetails) {
+    	ApiResponse<Void> response;
     	loginService.modifyUser(userDetails.getUsername(), userVO.getPassword(), userVO.getName(), userVO.getEmail());
     	
-        response.put("message", "Modfiy Success.");
-        response.put("state", true);
-        return response;
+    	response = new ApiResponse<>(HttpStatus.OK, "Modify User Success", null, null);
+    	return ResponseEntity.ok(response);
     }
     
     @PostMapping("/sendverifyemail")
-    public Map<String, Object> sendVerifyEmail(@RequestBody EmailVO emailVO, HttpServletRequest req) {
-    	Map<String, Object> response = new HashMap<String, Object>();
+    public ResponseEntity<ApiResponse<Void>> sendVerifyEmail(@RequestBody EmailVO emailVO, HttpServletRequest req) {
+    	ApiResponse<Void> response;
     	
     	String verifyCode = RandomCreateManager.getValidateCode();
     	HttpSession session = req.getSession();
@@ -132,61 +118,43 @@ public class MainController {
     	mailDTO.setTo(emailVO.getEmail());
     	mailDTO.setTitle("마진요정 이메일 인증번호 입니다.");
     	
-    	try {
-    		loginService.sendMail(mailDTO);
-        	
-    		response.put("message", "Success");
-            response.put("state", true);
-    	} catch (MailException e){
-    		System.out.println(e);
-    		response.put("message", e.getMessage());
-            response.put("state", false);
-    	}
-    	
-        return response;
+		loginService.sendMail(mailDTO);
+		response = new ApiResponse<>(HttpStatus.OK, "Mail Send Success", null, null);
+		return ResponseEntity.ok(response);
     }
     
     @PostMapping("/validationcheckemail")
-    public Map<String, Object> validateEmail(@RequestBody EmailVO emailVO) {
-    	Map<String, Object> response = new HashMap<String, Object>();
+    public ResponseEntity<ApiResponse<Void>> validateEmail(@RequestBody EmailVO emailVO) {
+    	ApiResponse<Void> response;
     	 
     	if (loginService.validateEmail(emailVO.getEmail()) == null) {
-    		response.put("message", "Validate.");
-            response.put("state", true);
+    		response = new ApiResponse<>(HttpStatus.OK, "Validate Email", null, null);
+    		return ResponseEntity.ok(response);
     	} else {
-    		response.put("message", "Duplicate");
-            response.put("state", false);
+    		throw new DuplicateEmailException("이미 가입된 이메일 입니다.");
     	}
-    	
-        return response;
     }
     @GetMapping("/mailCheck")
-    public Map<String, Object> mailCheck(@RequestParam("VerifyCode") String verifyCode, HttpServletRequest req) {
-    	Map<String, Object> response = new HashMap<String, Object>();
+    public ResponseEntity<ApiResponse<Void>> mailCheck(@RequestParam("VerifyCode") String verifyCode, HttpServletRequest req) {
+    	ApiResponse<Void> response;
     	HttpSession session = req.getSession();
     	String serverVerifyCode = (String) session.getAttribute("VerifyCode");
     	System.out.println("ServerVerifyCode: " + serverVerifyCode);
     	if (serverVerifyCode.equals(verifyCode)) {
-    		response.put("result", null);
-    		response.put("message", "Validate.");
-            response.put("state", true);
             session.setAttribute("VerifyCode", null);
+            response = new ApiResponse<>(HttpStatus.OK, "Verify Success", null, null);
+            return ResponseEntity.ok(response);
     	} else {
-    		response.put("result", null);
-    		response.put("message", "Fail");
-            response.put("state", false);
+    		throw new InvalidVerifyCodeException("잘못된 인증번호 입니다.");
     	}
-
-        return response;
     }
     @Transactional
     @PostMapping("/findPw")
-    public Map<String, Object> findPassword(@RequestBody EmailUserIdVO emailUserIdVO) {
-    	Map<String, Object> response = new HashMap<String, Object>();
+    public ResponseEntity<ApiResponse<Void>> findPassword(@RequestBody EmailUserIdVO emailUserIdVO) {
+    	ApiResponse<Void> response;
     	UsersDTO user = loginService.validateEmail(emailUserIdVO.getEmail());
     	if (user == null) {
-    		response.put("message", "Not Exists Email");
-            response.put("state", false);
+    		throw new EmailNotFoundException("존재하지 않는 이메일 입니다.");
     	} else {
     		if (user.getUserId() == emailUserIdVO.getUserId()) {
     			String tempPassword = RandomCreateManager.getTmpPassword();
@@ -197,50 +165,33 @@ public class MainController {
         		mail.setMessage("안녕하세요. 임시 비밀번호 안내 메일입니다. "
         		          + "\n" + "회원님의 임시 비밀번호는 아래와 같습니다. 로그인 후 반드시 비밀번호를 변경해주세요." + "\n" + "패스워드: " + tempPassword+ "\n");
         		
-        		try {
-        			loginService.sendMail(mail);
-            		response.put("message", "Send Email");
-                    response.put("state", true);
-            	} catch (MailException e){
-            		response.put("message", "Fail send mail");
-                    response.put("state", false);
-            	}
-        		
+    			loginService.sendMail(mail);
+    			response = new ApiResponse<>(HttpStatus.OK, "Send Email", null, null);
+                return ResponseEntity.ok(response);
     		} else {
-    			response.put("message", "Not Exists Email");
-                response.put("state", false);
+    			throw new EmailNotFoundException("존재하지 않는 이메일 입니다.");
     		}	
     	}
-    	
-        
-        return response;
     }
     @PostMapping("/logout")
-    public Map<String, Object> logout(Authentication authentication, HttpServletRequest request, HttpServletResponse res) {
-    	Map<String, Object> response = new HashMap<String, Object>();
+    public ResponseEntity<ApiResponse<Void>> logout(Authentication authentication, HttpServletRequest request, HttpServletResponse res) {
+    	ApiResponse<Void> response;
     	SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
     	logoutHandler.logout(request, res, authentication);
-		response.put("message", "Logout.");
-        response.put("state", true);
-
-        return response;
+    	response = new ApiResponse<>(HttpStatus.OK, "Logout", null, null);
+        return ResponseEntity.ok(response);
     }
     
     @PostMapping("/deleteaccount")
-    public Map<String, Object> deleteUser(@AuthenticationPrincipal UserDetails userDetails, Authentication authentication, HttpServletRequest request, HttpServletResponse res) {
-    	Map<String, Object> response = new HashMap<String, Object>();
-    	Map<String, Object> deleteState = accountService.DeleteUser(userDetails.getUsername());
-    	if ((boolean)deleteState.get("state")) {
+    public ResponseEntity<ApiResponse<Void>> deleteUser(@AuthenticationPrincipal UserDetails userDetails, Authentication authentication, HttpServletRequest request, HttpServletResponse res) {
+    	ApiResponse<Void> response;
+    	if (accountService.DeleteUser(userDetails.getUsername()) > 0) {
     		SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
         	logoutHandler.logout(request, res, authentication);
-    		response.put("message", "Delete Account Success.");
-            response.put("state", true);
+        	response = new ApiResponse<>(HttpStatus.OK, "Delete Account Success", null, null);
+            return ResponseEntity.ok(response);
     	} else {
-    		response.put("message", "Delete Fail.");
-    		response.put("state", false);
-    	}
-    	
-
-        return response;
+    		throw new UsernameNotFoundException("계정 삭제에 실패하였습니다.");
+    	}    	
     }
 }

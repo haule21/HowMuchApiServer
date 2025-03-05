@@ -44,71 +44,32 @@ public class RecipeRepository {
         return ingredients.isEmpty() ? null : ingredients;
     }
     
-    public Map<String, Object> modify(RecipeDTO recipe) {
-    	Map<String, Object> result = new HashMap<String, Object>();
+    public int modify(RecipeDTO recipe) {
     	String procedureName = "sp_MODIFY_RECIPE_BY_RECIPEKEY";
 
         // 저장 프로시저 실행
-        try {
-        	jdbcTemplate.update("EXEC " + procedureName + " @UserId = ?, @RecipeKey = ?, @RecipeName = ?, @Price = ?",
+        return jdbcTemplate.update("EXEC " + procedureName + " @UserId = ?, @RecipeKey = ?, @RecipeName = ?, @Price = ?",
         			recipe.getUserId(), recipe.getRecipeKey(), recipe.getRecipeName(), recipe.getPrice());
-        	result.put("message", "Success");
-        	result.put("state", true);
-        } catch (DataAccessException  e) {
-            result.put("message", e.getMessage());
-        	result.put("state", false);
-        }
-
-        return result;
     }
-    public Map<String, Object> save(RecipeDTO recipe) {
-    	Map<String, Object> result = new HashMap<String, Object>();
+    public int save(RecipeDTO recipe) {
     	String procedureName = "sp_ADD_RECIPE_BY_USERID";
 
-        // 저장 프로시저 실행
-        try {
-        	jdbcTemplate.update("EXEC " + procedureName + " @UserId = ?, @RecipeName = ?, @Price = ?",
-        			recipe.getUserId(), recipe.getRecipeName(), recipe.getPrice());
-        	result.put("message", "Success");
-        	result.put("state", true);
-        } catch (DataAccessException  e) {
-            result.put("message", e.getMessage());
-        	result.put("state", false);
-        }
-        return result;
+    	return jdbcTemplate.update("EXEC " + procedureName + " @UserId = ?, @RecipeName = ?, @Price = ?",
+    			recipe.getUserId(), recipe.getRecipeName(), recipe.getPrice());
     }
     
-    public Map<String, Object> modifyDetail(RecipeDetailDTO recipeDetail) {
-    	Map<String, Object> result = new HashMap<String, Object>();
+    public int modifyDetail(RecipeDetailDTO recipeDetail) {
     	String procedureName = "sp_MODIFY_RECIPE_DETAIL_BY_USERID_RECIPEDETAILKEY";
 
         // 저장 프로시저 실행
-        try {
-        	jdbcTemplate.update("EXEC " + procedureName + " @UserId = ?, @RecipeKey = ?, @RecipeDetailKey = ?, @IngredientKey = ?, @MaterialUsage = ?, @IngredientUnitKey = ?",
-        			recipeDetail.getUserId(), recipeDetail.getRecipeKey(), recipeDetail.getRecipeDetailKey(), recipeDetail.getIngredientKey(), recipeDetail.getMaterialUsage(), recipeDetail.getUnitKey());
-        	result.put("message", "Success");
-        	result.put("state", true);
-        } catch (DataAccessException  e) {
-            result.put("message", e.getMessage());
-        	result.put("state", false);
-        }
-
-        return result;
+    	return jdbcTemplate.update("EXEC " + procedureName + " @UserId = ?, @RecipeKey = ?, @RecipeDetailKey = ?, @IngredientKey = ?, @MaterialUsage = ?, @IngredientUnitKey = ?",
+    			recipeDetail.getUserId(), recipeDetail.getRecipeKey(), recipeDetail.getRecipeDetailKey(), recipeDetail.getIngredientKey(), recipeDetail.getMaterialUsage(), recipeDetail.getUnitKey());
     }
-    public Map<String, Object> saveDetail(RecipeDetailDTO sourceRecipe) {
-    	Map<String, Object> result = new HashMap<String, Object>();
+    public int saveDetail(RecipeDetailDTO sourceRecipe) {
     	String procedureName = "sp_ADD_RECIPE_DETAIL_BY_USERID";
 
         // 저장 프로시저 실행
-        try {
-        	jdbcTemplate.update("EXEC " + procedureName + " @UserId = ?, @RecipeKey = ?, @IngredientKey = ?, @MaterialUsage = ?, @IngredientUnitKey = ?",
-        			sourceRecipe.getUserId(), sourceRecipe.getRecipeKey(), sourceRecipe.getIngredientKey(), sourceRecipe.getMaterialUsage(), sourceRecipe.getUnitKey());
-        	result.put("message", "Success");
-        	result.put("state", true);
-        } catch (DataAccessException  e) {
-            result.put("message", e.getMessage());
-        	result.put("state", false);
-        }
-        return result;
+    	return jdbcTemplate.update("EXEC " + procedureName + " @UserId = ?, @RecipeKey = ?, @IngredientKey = ?, @MaterialUsage = ?, @IngredientUnitKey = ?",
+    			sourceRecipe.getUserId(), sourceRecipe.getRecipeKey(), sourceRecipe.getIngredientKey(), sourceRecipe.getMaterialUsage(), sourceRecipe.getUnitKey());
     }
 }

@@ -24,7 +24,7 @@ public class IngredientServiceImpl implements IngredientService{
 	}
 	
 	@Override
-	public Map<String, Object> addIngredient(String userId, IngredientVO ingredientVO) {
+	public int addIngredient(String userId, IngredientVO ingredientVO) {
 		IngredientDTO ingredientDTO = new IngredientDTO();
 		ingredientDTO.setUserId(userId);
 		ingredientDTO.setIngredientKey(ingredientVO.getIngredientKey());
@@ -35,7 +35,7 @@ public class IngredientServiceImpl implements IngredientService{
 		return ingredientRepository.save(ingredientDTO);
 	}
 	@Override
-	public Map<String, Object> modifyIngredient(String userId, IngredientVO ingredientVO) {
+	public int modifyIngredient(String userId, IngredientVO ingredientVO) {
 		IngredientDTO ingredientDTO = new IngredientDTO();
 		ingredientDTO.setUserId(userId);
 		ingredientDTO.setIngredientKey(ingredientVO.getIngredientKey());

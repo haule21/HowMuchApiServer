@@ -35,71 +35,33 @@ public class SourceRepository {
         return sources.isEmpty() ? null : sources;
     }
     
-    public Map<String, Object> modify(SourceDTO source) {
-    	Map<String, Object> result = new HashMap<String, Object>();
+    public int modify(SourceDTO source) {
     	String procedureName = "sp_MODIFY_SOURCE_BY_SOURCEKEY";
 
-        // 저장 프로시저 실행
-        try {
-        	jdbcTemplate.update("EXEC " + procedureName + " @UserId = ?, @SourceKey = ?, @SourceName = ?, @Amount = ?",
+        return jdbcTemplate.update("EXEC " + procedureName + " @UserId = ?, @SourceKey = ?, @SourceName = ?, @Amount = ?",
         			source.getUserId(), source.getSourceKey(), source.getSourceName(), source.getAmount());
-        	result.put("message", "Success");
-        	result.put("state", true);
-        } catch (DataAccessException  e) {
-            result.put("message", e.getMessage());
-        	result.put("state", false);
-        }
 
-        return result;
     }
-    public Map<String, Object> save(SourceDTO source) {
-    	Map<String, Object> result = new HashMap<String, Object>();
+    public int save(SourceDTO source) {
     	String procedureName = "sp_ADD_SOURCE_BY_USERID";
 
-        // 저장 프로시저 실행
-        try {
-        	jdbcTemplate.update("EXEC " + procedureName + " @UserId = ?, @SourceName = ?, @Amount = ?",
+        
+    	return jdbcTemplate.update("EXEC " + procedureName + " @UserId = ?, @SourceName = ?, @Amount = ?",
         			source.getUserId(), source.getSourceName(), source.getAmount());
-        	result.put("message", "Success");
-        	result.put("state", true);
-        } catch (DataAccessException  e) {
-            result.put("message", e.getMessage());
-        	result.put("state", false);
-        }
-        return result;
     }
     
-    public Map<String, Object> modifySourceRecipe(SourceRecipeDTO sourceRecipe) {
-    	Map<String, Object> result = new HashMap<String, Object>();
+    public int modifySourceRecipe(SourceRecipeDTO sourceRecipe) {
     	String procedureName = "sp_MODIFY_SOURCE_RECIPE_BY_USERID_SOURCERECIPEKEY";
 
-        // 저장 프로시저 실행
-        try {
-        	jdbcTemplate.update("EXEC " + procedureName + " @UserId = ?, @SourceKey = ?, @SourceRecipeKey = ?, @IngredientKey = ?, @MaterialUsage = ?, @IngredientUnitKey = ?",
+    	return jdbcTemplate.update("EXEC " + procedureName + " @UserId = ?, @SourceKey = ?, @SourceRecipeKey = ?, @IngredientKey = ?, @MaterialUsage = ?, @IngredientUnitKey = ?",
         			sourceRecipe.getUserId(), sourceRecipe.getSourceKey(), sourceRecipe.getSourceRecipeKey(), sourceRecipe.getIngredientKey(), sourceRecipe.getMaterialUsage(), sourceRecipe.getUnitKey());
-        	result.put("message", "Success");
-        	result.put("state", true);
-        } catch (DataAccessException  e) {
-            result.put("message", e.getMessage());
-        	result.put("state", false);
-        }
 
-        return result;
     }
-    public Map<String, Object> saveSourceRecipe(SourceRecipeDTO sourceRecipe) {
-    	Map<String, Object> result = new HashMap<String, Object>();
+    public int saveSourceRecipe(SourceRecipeDTO sourceRecipe) {
     	String procedureName = "sp_ADD_SOURCE_RECIPE_BY_USERID";
 
-        // 저장 프로시저 실행
-        try {
-        	jdbcTemplate.update("EXEC " + procedureName + " @UserId = ?, @SourceKey = ?, @IngredientKey = ?, @MaterialUsage = ?, @IngredientUnitKey = ?",
+        return jdbcTemplate.update("EXEC " + procedureName + " @UserId = ?, @SourceKey = ?, @IngredientKey = ?, @MaterialUsage = ?, @IngredientUnitKey = ?",
         			sourceRecipe.getUserId(), sourceRecipe.getSourceKey(), sourceRecipe.getIngredientKey(), sourceRecipe.getMaterialUsage(), sourceRecipe.getUnitKey());
-        	result.put("message", "Success");
-        	result.put("state", true);
-        } catch (DataAccessException  e) {
-            result.put("message", e.getMessage());
-        	result.put("state", false);
-        }
-        return result;
+
     }
 }

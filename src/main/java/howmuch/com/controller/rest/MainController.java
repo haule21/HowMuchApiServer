@@ -44,12 +44,14 @@ import howmuch.com.service.AccountService;
 import howmuch.com.service.LoginService;
 import howmuch.com.vo.EmailUserIdVO;
 import howmuch.com.vo.EmailVO;
+import howmuch.com.vo.RegisterVO;
 import howmuch.com.vo.UserVO;
 import howmuch.com.vo.VerifyCodeVO;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 
 // TODO: User Regex, Pass Regex
 @RestController
@@ -64,7 +66,7 @@ public class MainController {
 	private AccountService accountService;
 
     @PostMapping("/login")
-    public ResponseEntity<ApiResponse<Void>> login(@RequestBody UserVO userVO, HttpServletRequest req, HttpServletResponse res) {
+    public ResponseEntity<ApiResponse<Void>> login(@RequestBody @Valid UserVO userVO, HttpServletRequest req, HttpServletResponse res) {
     	ApiResponse<Void> response;
     	// Map<String, Object> response = new HashMap<String, Object>();
 		UsernamePasswordAuthenticationToken authenticationToken =
@@ -77,17 +79,17 @@ public class MainController {
         session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, SecurityContextHolder.getContext());
         
         loginService.modifyLoginFailNumReset(userVO.getUserId());
-        response = new ApiResponse<>(HttpStatus.OK, "Login Success", null, null);
+        response = new ApiResponse<>(HttpStatus.OK.value(), "Login Success", null, null);
         return ResponseEntity.ok(response);
     }
     
     @PostMapping("/register")
-    public ResponseEntity<ApiResponse<Void>> register(@RequestBody UserVO userVO) {
+    public ResponseEntity<ApiResponse<Void>> register(@RequestBody RegisterVO registerVO) {
     	ApiResponse<Void> response;
-    	if (loginService.getUserByUserId(userVO.getUserId()) == null) {
-    		if (loginService.validateEmail(userVO.getEmail()) == null) {
-    			loginService.createUser(userVO.getUserId(), userVO.getPassword(), userVO.getName(), userVO.getEmail());
-    			response = new ApiResponse<>(HttpStatus.OK, "Register Success", null, null);
+    	if (loginService.getUserByUserId(registerVO.getUserId()) == null) {
+    		if (loginService.validateEmail(registerVO.getEmail()) == null) {
+    			loginService.createUser(registerVO.getUserId(), registerVO.getPassword(), registerVO.getName(), registerVO.getEmail());
+    			response = new ApiResponse<>(HttpStatus.OK.value(), "Register Success", null, null);
     			return ResponseEntity.ok(response);
     		} else {
     			throw new DuplicateEmailException("중복된 이메일 입니다.");
@@ -98,11 +100,11 @@ public class MainController {
     }
     
     @PostMapping("/modifyuser")
-    public ResponseEntity<ApiResponse<Void>> modifyUser(@RequestBody UserVO userVO, @AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity<ApiResponse<Void>> modifyUser(@RequestBody RegisterVO registerVO, @AuthenticationPrincipal UserDetails userDetails) {
     	ApiResponse<Void> response;
-    	loginService.modifyUser(userDetails.getUsername(), userVO.getPassword(), userVO.getName(), userVO.getEmail());
+    	loginService.modifyUser(userDetails.getUsername(), registerVO.getPassword(), registerVO.getName(), registerVO.getEmail());
     	
-    	response = new ApiResponse<>(HttpStatus.OK, "Modify User Success", null, null);
+    	response = new ApiResponse<>(HttpStatus.OK.value(), "Modify User Success", null, null);
     	return ResponseEntity.ok(response);
     }
     
@@ -119,7 +121,7 @@ public class MainController {
     	mailDTO.setTitle("마진요정 이메일 인증번호 입니다.");
     	
 		loginService.sendMail(mailDTO);
-		response = new ApiResponse<>(HttpStatus.OK, "Mail Send Success", null, null);
+		response = new ApiResponse<>(HttpStatus.OK.value(), "Mail Send Success", null, null);
 		return ResponseEntity.ok(response);
     }
     
@@ -128,7 +130,7 @@ public class MainController {
     	ApiResponse<Void> response;
     	 
     	if (loginService.validateEmail(emailVO.getEmail()) == null) {
-    		response = new ApiResponse<>(HttpStatus.OK, "Validate Email", null, null);
+    		response = new ApiResponse<>(HttpStatus.OK.value(), "Validate Email", null, null);
     		return ResponseEntity.ok(response);
     	} else {
     		throw new DuplicateEmailException("이미 가입된 이메일 입니다.");
@@ -142,7 +144,7 @@ public class MainController {
     	System.out.println("ServerVerifyCode: " + serverVerifyCode);
     	if (serverVerifyCode.equals(verifyCode)) {
             session.setAttribute("VerifyCode", null);
-            response = new ApiResponse<>(HttpStatus.OK, "Verify Success", null, null);
+            response = new ApiResponse<>(HttpStatus.OK.value(), "Verify Success", null, null);
             return ResponseEntity.ok(response);
     	} else {
     		throw new InvalidVerifyCodeException("잘못된 인증번호 입니다.");
@@ -166,7 +168,7 @@ public class MainController {
         		          + "\n" + "회원님의 임시 비밀번호는 아래와 같습니다. 로그인 후 반드시 비밀번호를 변경해주세요." + "\n" + "패스워드: " + tempPassword+ "\n");
         		
     			loginService.sendMail(mail);
-    			response = new ApiResponse<>(HttpStatus.OK, "Send Email", null, null);
+    			response = new ApiResponse<>(HttpStatus.OK.value(), "Send Email", null, null);
                 return ResponseEntity.ok(response);
     		} else {
     			throw new EmailNotFoundException("존재하지 않는 이메일 입니다.");
@@ -178,7 +180,7 @@ public class MainController {
     	ApiResponse<Void> response;
     	SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
     	logoutHandler.logout(request, res, authentication);
-    	response = new ApiResponse<>(HttpStatus.OK, "Logout", null, null);
+    	response = new ApiResponse<>(HttpStatus.OK.value(), "Logout", null, null);
         return ResponseEntity.ok(response);
     }
     
@@ -188,7 +190,7 @@ public class MainController {
     	if (accountService.DeleteUser(userDetails.getUsername()) > 0) {
     		SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
         	logoutHandler.logout(request, res, authentication);
-        	response = new ApiResponse<>(HttpStatus.OK, "Delete Account Success", null, null);
+        	response = new ApiResponse<>(HttpStatus.OK.value(), "Delete Account Success", null, null);
             return ResponseEntity.ok(response);
     	} else {
     		throw new UsernameNotFoundException("계정 삭제에 실패하였습니다.");

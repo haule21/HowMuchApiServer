@@ -46,7 +46,7 @@ public class RecipeController {
 			throw new SessionAuthenticationException("먼저 로그인하여 주세요.");
 		} else {
 			List<RecipeDTO> recipe = recipeService.getAllRecipe(userDetails.getUsername());
-			response = new ApiResponse<>(HttpStatus.OK, "Get Recipe Success", recipe, null);
+			response = new ApiResponse<>(HttpStatus.OK.value(), "Get Recipe Success", recipe, null);
 	        return ResponseEntity.ok(response);
 		}
     }
@@ -59,7 +59,7 @@ public class RecipeController {
 			throw new SessionAuthenticationException("먼저 로그인하여 주세요.");
 		} else {
 			List<RecipeDetailDTO> recipeDetail = recipeService.allRecipeDetailByUserIdRecipeKey(userDetails.getUsername(), recipeKey);
-			response = new ApiResponse<>(HttpStatus.OK, "Get RecipeDetail Success", recipeDetail, null);
+			response = new ApiResponse<>(HttpStatus.OK.value(), "Get RecipeDetail Success", recipeDetail, null);
 	        return ResponseEntity.ok(response);
 		}
     }
@@ -72,7 +72,7 @@ public class RecipeController {
 			throw new SessionAuthenticationException("먼저 로그인하여 주세요.");
 		} else {
 			List<IngredientSourceDTO> ingredientSource = recipeService.allIngredientSource(userDetails.getUsername());
-			response = new ApiResponse<>(HttpStatus.OK, "Get Ingredient Source Success", ingredientSource, null);
+			response = new ApiResponse<>(HttpStatus.OK.value(), "Get Ingredient Source Success", ingredientSource, null);
 	        return ResponseEntity.ok(response);
 		}   
     }
@@ -83,7 +83,7 @@ public class RecipeController {
 			throw new SessionAuthenticationException("먼저 로그인하여 주세요.");
 		} else {
 			recipeService.modify(userDetails.getUsername(), recipeVO);
-			response = new ApiResponse<>(HttpStatus.OK, "Modify Recipe Unit Success", null, null);
+			response = new ApiResponse<>(HttpStatus.OK.value(), "Modify Recipe Unit Success", null, null);
 	        return ResponseEntity.ok(response);
 		}
     }
@@ -95,7 +95,7 @@ public class RecipeController {
 			throw new SessionAuthenticationException("먼저 로그인하여 주세요.");
 		} else {
 			recipeService.save(userDetails.getUsername(), recipeVO);
-			response = new ApiResponse<>(HttpStatus.OK, "Add Recipe Success", null, null);
+			response = new ApiResponse<>(HttpStatus.OK.value(), "Add Recipe Success", null, null);
 			return ResponseEntity.ok(response);
 		}
     }
@@ -107,7 +107,7 @@ public class RecipeController {
 			throw new SessionAuthenticationException("먼저 로그인하여 주세요.");
 		} else {
 			recipeService.modifyDetail(userDetails.getUsername(), recipeDetailVO);
-			response = new ApiResponse<>(HttpStatus.OK, "Modify RecipeDetail Success", null, null);
+			response = new ApiResponse<>(HttpStatus.OK.value(), "Modify RecipeDetail Success", null, null);
 	        return ResponseEntity.ok(response);
 		}   
     }
@@ -119,7 +119,7 @@ public class RecipeController {
 			throw new SessionAuthenticationException("먼저 로그인하여 주세요.");
 		} else {
 			recipeService.saveDetail(userDetails.getUsername(), recipeDetailVO);
-			response = new ApiResponse<>(HttpStatus.OK, "Add RecipeDetail Success", null, null);
+			response = new ApiResponse<>(HttpStatus.OK.value(), "Add RecipeDetail Success", null, null);
 	        return ResponseEntity.ok(response);
 		}   
     }

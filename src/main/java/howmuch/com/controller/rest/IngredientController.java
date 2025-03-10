@@ -38,7 +38,7 @@ public class IngredientController {
 			throw new SessionAuthenticationException("먼저 로그인하여 주세요.");
 		} else {
 			List<IngredientDTO> ingredients = ingredientService.getAllIngredient(userDetails.getUsername());
-	        response = new ApiResponse<>(HttpStatus.OK, "Get Ingredients Success", ingredients, null);
+	        response = new ApiResponse<>(HttpStatus.OK.value(), "Get Ingredients Success", ingredients, null);
 	        return ResponseEntity.ok(response);
 		}   
     }
@@ -50,7 +50,7 @@ public class IngredientController {
 			throw new SessionAuthenticationException("먼저 로그인하여 주세요.");
 		} else {
 			ingredientService.modifyIngredient(userDetails.getUsername(), ingredientVO);
-			response = new ApiResponse<>(HttpStatus.OK, "Modify Ingredients Success", null, null);
+			response = new ApiResponse<>(HttpStatus.OK.value(), "Modify Ingredients Success", null, null);
 			return ResponseEntity.ok(response);
 		}   
     }
@@ -62,7 +62,7 @@ public class IngredientController {
 			throw new SessionAuthenticationException("먼저 로그인하여 주세요.");
 		} else {
 			ingredientService.addIngredient(userDetails.getUsername(), ingredientVO);
-			response = new ApiResponse<>(HttpStatus.OK, "Add Ingredients Success", null, null);
+			response = new ApiResponse<>(HttpStatus.OK.value(), "Add Ingredients Success", null, null);
 			return ResponseEntity.ok(response);
 		}   
     }	

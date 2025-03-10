@@ -12,8 +12,8 @@ public interface SourceService {
 
 	List<SourceDTO> getAllSource(String userId);
 	List<SourceRecipeDTO> allSourceRecipeByUserIdSourceKey(String userId, String sourceRecipeKey);
-	Map<String, Object> modify(String userId, SourceVO source);
-	Map<String, Object> save(String userId, SourceVO source);
-	Map<String, Object> modifySourceRecipe(String userId, SourceRecipeVO sourceRecipe);
-	Map<String, Object> saveSourceRecipe(String userId, SourceRecipeVO sourceRecipe);
+	int modify(String userId, SourceVO source);
+	int save(String userId, SourceVO source);
+	int modifySourceRecipe(String userId, SourceRecipeVO sourceRecipe);
+	int saveSourceRecipe(String userId, SourceRecipeVO sourceRecipe);
 }

@@ -2,18 +2,20 @@ package howmuch.com.vo;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import jakarta.validation.constraints.NotBlank;
+import io.micrometer.common.lang.NonNull;
 import lombok.Getter;
 
 @Getter 
-public class UserVO {
-	@NotBlank(message="ID를 입력해 주세요.")
+public class RegisterVO {
 	@JsonProperty("UserId")
 	private String UserId;
-	@NotBlank(message="Password를 입력해 주세요.")
 	@JsonProperty("Password")
 	private String Password;
+	@JsonProperty("Name")
+	private String Name;
+	@JsonProperty("Email")
+	private String Email;
 	
-	public UserVO() {
+	public RegisterVO() {
 	}
 }

@@ -40,7 +40,7 @@ public class SourceController {
 			throw new SessionAuthenticationException("먼저 로그인하여 주세요.");
 		} else {
 			List<SourceDTO> source = sourceService.getAllSource(userDetails.getUsername());
-			response = new ApiResponse<>(HttpStatus.OK, "Get Source Success", source, null);
+			response = new ApiResponse<>(HttpStatus.OK.value(), "Get Source Success", source, null);
 			return ResponseEntity.ok(response);
 		}   
     }
@@ -53,7 +53,7 @@ public class SourceController {
 			throw new SessionAuthenticationException("먼저 로그인하여 주세요.");
 		} else {
 			List<SourceRecipeDTO> sourceRecipes = sourceService.allSourceRecipeByUserIdSourceKey(userDetails.getUsername(), sourceKey);
-			response = new ApiResponse<>(HttpStatus.OK, "Get Source Recipe Success", sourceRecipes, null);
+			response = new ApiResponse<>(HttpStatus.OK.value(), "Get Source Recipe Success", sourceRecipes, null);
 			return ResponseEntity.ok(response);
 		}   
     }
@@ -64,7 +64,7 @@ public class SourceController {
 			throw new SessionAuthenticationException("먼저 로그인하여 주세요.");
 		} else {
 			sourceService.modify(userDetails.getUsername(), sourceVO);
-			response = new ApiResponse<>(HttpStatus.OK, "Modify Source Success", null, null);
+			response = new ApiResponse<>(HttpStatus.OK.value(), "Modify Source Success", null, null);
 			return ResponseEntity.ok(response);
 		}
     }
@@ -76,7 +76,7 @@ public class SourceController {
 			throw new SessionAuthenticationException("먼저 로그인하여 주세요.");
 		} else {
 			sourceService.save(userDetails.getUsername(), sourceVO);
-			response = new ApiResponse<>(HttpStatus.OK, "Add Source Success", null, null);
+			response = new ApiResponse<>(HttpStatus.OK.value(), "Add Source Success", null, null);
 			return ResponseEntity.ok(response);
 		}
     }
@@ -87,7 +87,7 @@ public class SourceController {
 			throw new SessionAuthenticationException("먼저 로그인하여 주세요.");
 		} else {
 			sourceService.modifySourceRecipe(userDetails.getUsername(), sourceRecipeVO);
-			response = new ApiResponse<>(HttpStatus.OK, "Modify Source Recipe Success", null, null);
+			response = new ApiResponse<>(HttpStatus.OK.value(), "Modify Source Recipe Success", null, null);
 			return ResponseEntity.ok(response);
 		}   
     }
@@ -99,7 +99,7 @@ public class SourceController {
 			throw new SessionAuthenticationException("먼저 로그인하여 주세요.");
 		} else {
 			sourceService.saveSourceRecipe(userDetails.getUsername(), sourceRecipeVO);
-			response = new ApiResponse<>(HttpStatus.OK, "Add Source Recipe Success", null, null);
+			response = new ApiResponse<>(HttpStatus.OK.value(), "Add Source Recipe Success", null, null);
 			return ResponseEntity.ok(response);
 		}    
     }	

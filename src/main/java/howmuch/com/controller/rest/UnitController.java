@@ -40,7 +40,7 @@ public class UnitController {
 			throw new SessionAuthenticationException("먼저 로그인하여 주세요.");
 		} else {
 			List<UnitKeyNameDTO> unitNames = unitService.getUnitNameByIngredientUnitName(userDetails.getUsername(), unitKey);
-			response = new ApiResponse<>(HttpStatus.OK, "Get Ingredient UnitName Success", unitNames, null);
+			response = new ApiResponse<>(HttpStatus.OK.value(), "Get Ingredient UnitName Success", unitNames, null);
 			return ResponseEntity.ok(response);
 		}   
     }
@@ -53,7 +53,7 @@ public class UnitController {
 			throw new SessionAuthenticationException("먼저 로그인하여 주세요.");
 		} else {
 			List<UnitKeyNameDTO> unitNames = unitService.getAllUnitName(userDetails.getUsername());
-			response = new ApiResponse<>(HttpStatus.OK, "Get UnitName Success", unitNames, null);
+			response = new ApiResponse<>(HttpStatus.OK.value(), "Get UnitName Success", unitNames, null);
 			return ResponseEntity.ok(response);
 		}
     }
@@ -67,7 +67,7 @@ public class UnitController {
 			throw new SessionAuthenticationException("먼저 로그인하여 주세요.");
 		} else {
 			List<UnitDTO> units = unitService.getAllUnit(userDetails.getUsername());
-			response = new ApiResponse<>(HttpStatus.OK, "Get Unit Success", units, null);
+			response = new ApiResponse<>(HttpStatus.OK.value(), "Get Unit Success", units, null);
 			return ResponseEntity.ok(response);
 		}
     }
@@ -79,7 +79,7 @@ public class UnitController {
 			throw new SessionAuthenticationException("먼저 로그인하여 주세요.");
 		} else {
 			unitService.modifyUnit(userDetails.getUsername(), unitVO);
-			response = new ApiResponse<>(HttpStatus.OK, "Modify Unit Success", null, null);
+			response = new ApiResponse<>(HttpStatus.OK.value(), "Modify Unit Success", null, null);
 			return ResponseEntity.ok(response);
 		}   
     }
@@ -91,7 +91,7 @@ public class UnitController {
 			throw new SessionAuthenticationException("먼저 로그인하여 주세요.");
 		} else {
 			unitService.addUnit(userDetails.getUsername(), unitVO);
-			response = new ApiResponse<>(HttpStatus.OK, "Add Unit Success", null, null);
+			response = new ApiResponse<>(HttpStatus.OK.value(), "Add Unit Success", null, null);
 			return ResponseEntity.ok(response);
 		}    
     }	

@@ -11,6 +11,7 @@ public enum ErrorCode {
     NOT_EXISTS_EMAIL(HttpStatus.NOT_FOUND, "USER_006", "Not Exists Email"),
     DELETE_ACCOUNT_FAILED(HttpStatus.FORBIDDEN, "USER_007", "Delete Account Failed"),
     SESSION_EXPIRED(HttpStatus.FORBIDDEN, "USER_008", "Session Expired"),
+    INVALID_VALUE(HttpStatus.BAD_REQUEST, "VALID_001", "Argument Not Valid"),
     DB_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "PROC_001", "Procedure Execute Failed"),
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "SYS_001", "Internal server error");
 	

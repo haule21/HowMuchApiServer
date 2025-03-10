@@ -12,8 +12,10 @@ import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.session.SessionAuthenticationException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver;
 
 import howmuch.com.aop.LoggingAspect;
 import howmuch.com.dto.ApiResponse;
@@ -35,6 +37,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ConfigDataResourceNotFoundException.class)
     public ResponseEntity<ApiResponse<Void>> handleResourceNotFoundException(ConfigDataResourceNotFoundException ex) {
     	return handleException(ex.getMessage(), ErrorCode.INTERNAL_SERVER_ERROR);
+    }
+    
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+	public ResponseEntity<ApiResponse<Void>> handleMethodArgumentNotValidExceptionr(MethodArgumentNotValidException ex) {
+    	return handleException(ex.getBindingResult().getFieldError().getDefaultMessage(), ErrorCode.INVALID_VALUE);
     }
     
     @ExceptionHandler(MailException.class)
@@ -79,7 +86,7 @@ public class GlobalExceptionHandler {
 	
 	protected ResponseEntity<ApiResponse<Void>> handleException(String exMessage, ErrorCode code) {
 		Map<String, String> metadata = Map.of("errorCode", code.getCode());
-        ApiResponse<Void> response = new ApiResponse<>(code.getHttpStatus(), exMessage, null, metadata);
+        ApiResponse<Void> response = new ApiResponse<>(code.getHttpStatus().value(), exMessage, null, metadata);
 		return ResponseEntity.status(code.getHttpStatus()).body(response);
 	}
 }

@@ -26,7 +26,7 @@ public class SourceServiceImpl implements SourceService {
 		return sourceRepository.allSourceRecipeByUserIdSourceKey(userId, sourceRecipeKey);
 	}
 	@Override
-	public Map<String, Object> modify(String userId, SourceVO sourceVO) {
+	public int modify(String userId, SourceVO sourceVO) {
 		SourceDTO sourceDTO = new SourceDTO();
 		sourceDTO.setUserId(userId);
 		sourceDTO.setSourceKey(sourceVO.getSourceKey());
@@ -36,7 +36,7 @@ public class SourceServiceImpl implements SourceService {
 		return sourceRepository.modify(sourceDTO);
 	}
 	@Override
-	public Map<String, Object> modifySourceRecipe(String userId, SourceRecipeVO sourceRecipeVO) {
+	public int modifySourceRecipe(String userId, SourceRecipeVO sourceRecipeVO) {
 		SourceRecipeDTO sourceRecipeDTO = new SourceRecipeDTO();
 		sourceRecipeDTO.setUserId(userId);
 		sourceRecipeDTO.setSourceKey(sourceRecipeVO.getSourceKey());
@@ -48,7 +48,7 @@ public class SourceServiceImpl implements SourceService {
 		return sourceRepository.modifySourceRecipe(sourceRecipeDTO);
 	}
 	@Override
-	public Map<String, Object> save(String userId, SourceVO sourceVO) {
+	public int save(String userId, SourceVO sourceVO) {
 		SourceDTO sourceDTO = new SourceDTO();
 		sourceDTO.setUserId(userId);
 		sourceDTO.setSourceName(sourceVO.getSourceName());
@@ -56,7 +56,7 @@ public class SourceServiceImpl implements SourceService {
 		return sourceRepository.save(sourceDTO);
 	}
 	@Override
-	public Map<String, Object> saveSourceRecipe(String userId, SourceRecipeVO sourceRecipeVO) {
+	public int saveSourceRecipe(String userId, SourceRecipeVO sourceRecipeVO) {
 		SourceRecipeDTO sourceRecipeDTO = new SourceRecipeDTO();
 		sourceRecipeDTO.setUserId(userId);
 		sourceRecipeDTO.setSourceKey(sourceRecipeVO.getSourceKey());

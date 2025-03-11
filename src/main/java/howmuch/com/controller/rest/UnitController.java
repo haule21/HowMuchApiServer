@@ -23,6 +23,7 @@ import howmuch.com.dto.UnitDTO;
 import howmuch.com.dto.UnitKeyNameDTO;
 import howmuch.com.service.UnitService;
 import howmuch.com.vo.UnitVO;
+import jakarta.validation.Valid;
 
 
 @RestController
@@ -73,7 +74,7 @@ public class UnitController {
     }
 	
 	@PostMapping("/modifyunit")
-    public ResponseEntity<ApiResponse<Void>> ModifyUnit(@RequestBody UnitVO unitVO, @AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity<ApiResponse<Void>> ModifyUnit(@RequestBody @Valid UnitVO unitVO, @AuthenticationPrincipal UserDetails userDetails) {
 		ApiResponse<Void> response;
 		if (userDetails.getUsername() == null) {
 			throw new SessionAuthenticationException("먼저 로그인하여 주세요.");
@@ -85,7 +86,7 @@ public class UnitController {
     }
 	
 	@PostMapping("/addunit")
-    public ResponseEntity<ApiResponse<Void>> AddUnit(@RequestBody UnitVO unitVO, @AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity<ApiResponse<Void>> AddUnit(@RequestBody @Valid UnitVO unitVO, @AuthenticationPrincipal UserDetails userDetails) {
 		ApiResponse<Void> response;
 		if (userDetails.getUsername() == null) {
 			throw new SessionAuthenticationException("먼저 로그인하여 주세요.");

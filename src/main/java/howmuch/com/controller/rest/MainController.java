@@ -84,7 +84,7 @@ public class MainController {
     }
     
     @PostMapping("/register")
-    public ResponseEntity<ApiResponse<Void>> register(@RequestBody RegisterVO registerVO) {
+    public ResponseEntity<ApiResponse<Void>> register(@RequestBody @Valid RegisterVO registerVO) {
     	ApiResponse<Void> response;
     	if (loginService.getUserByUserId(registerVO.getUserId()) == null) {
     		if (loginService.validateEmail(registerVO.getEmail()) == null) {
@@ -100,7 +100,7 @@ public class MainController {
     }
     
     @PostMapping("/modifyuser")
-    public ResponseEntity<ApiResponse<Void>> modifyUser(@RequestBody RegisterVO registerVO, @AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity<ApiResponse<Void>> modifyUser(@RequestBody @Valid RegisterVO registerVO, @AuthenticationPrincipal UserDetails userDetails) {
     	ApiResponse<Void> response;
     	loginService.modifyUser(userDetails.getUsername(), registerVO.getPassword(), registerVO.getName(), registerVO.getEmail());
     	
@@ -109,7 +109,7 @@ public class MainController {
     }
     
     @PostMapping("/sendverifyemail")
-    public ResponseEntity<ApiResponse<Void>> sendVerifyEmail(@RequestBody EmailVO emailVO, HttpServletRequest req) {
+    public ResponseEntity<ApiResponse<Void>> sendVerifyEmail(@RequestBody @Valid EmailVO emailVO, HttpServletRequest req) {
     	ApiResponse<Void> response;
     	
     	String verifyCode = RandomCreateManager.getValidateCode();
@@ -126,7 +126,7 @@ public class MainController {
     }
     
     @PostMapping("/validationcheckemail")
-    public ResponseEntity<ApiResponse<Void>> validateEmail(@RequestBody EmailVO emailVO) {
+    public ResponseEntity<ApiResponse<Void>> validateEmail(@RequestBody @Valid EmailVO emailVO) {
     	ApiResponse<Void> response;
     	 
     	if (loginService.validateEmail(emailVO.getEmail()) == null) {
@@ -152,7 +152,7 @@ public class MainController {
     }
     @Transactional
     @PostMapping("/findPw")
-    public ResponseEntity<ApiResponse<Void>> findPassword(@RequestBody EmailUserIdVO emailUserIdVO) {
+    public ResponseEntity<ApiResponse<Void>> findPassword(@RequestBody @Valid EmailUserIdVO emailUserIdVO) {
     	ApiResponse<Void> response;
     	UsersDTO user = loginService.validateEmail(emailUserIdVO.getEmail());
     	if (user == null) {

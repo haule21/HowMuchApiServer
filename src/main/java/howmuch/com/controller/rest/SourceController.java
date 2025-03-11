@@ -25,6 +25,7 @@ import howmuch.com.service.SourceService;
 import howmuch.com.vo.SourceRecipeVO;
 import howmuch.com.vo.SourceVO;
 import howmuch.com.vo.UnitVO;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping(value = "/api/source")
@@ -58,7 +59,7 @@ public class SourceController {
 		}   
     }
 	@PostMapping("/modifysoruce")
-    public ResponseEntity<ApiResponse<Void>> ModifyUnit(@RequestBody SourceVO sourceVO, @AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity<ApiResponse<Void>> ModifyUnit(@RequestBody @Valid SourceVO sourceVO, @AuthenticationPrincipal UserDetails userDetails) {
 		ApiResponse<Void> response;
 		if (userDetails.getUsername() == null) {
 			throw new SessionAuthenticationException("먼저 로그인하여 주세요.");
@@ -70,7 +71,7 @@ public class SourceController {
     }
 	
 	@PostMapping("/addsoruce")
-    public ResponseEntity<ApiResponse<Void>> AddUnit(@RequestBody SourceVO sourceVO, @AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity<ApiResponse<Void>> AddUnit(@RequestBody @Valid SourceVO sourceVO, @AuthenticationPrincipal UserDetails userDetails) {
 		ApiResponse<Void> response;
 		if (userDetails.getUsername() == null) {
 			throw new SessionAuthenticationException("먼저 로그인하여 주세요.");
@@ -81,7 +82,7 @@ public class SourceController {
 		}
     }
 	@PostMapping("/modifysorucerecipe")
-    public ResponseEntity<ApiResponse<Void>> ModifyUnit(@RequestBody SourceRecipeVO sourceRecipeVO, @AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity<ApiResponse<Void>> ModifyUnit(@RequestBody @Valid SourceRecipeVO sourceRecipeVO, @AuthenticationPrincipal UserDetails userDetails) {
 		ApiResponse<Void> response;
 		if (userDetails.getUsername() == null) {
 			throw new SessionAuthenticationException("먼저 로그인하여 주세요.");
@@ -93,7 +94,7 @@ public class SourceController {
     }
 	
 	@PostMapping("/addsorucerecipe")
-    public ResponseEntity<ApiResponse<Void>> AddUnit(@RequestBody SourceRecipeVO sourceRecipeVO, @AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity<ApiResponse<Void>> AddUnit(@RequestBody @Valid SourceRecipeVO sourceRecipeVO, @AuthenticationPrincipal UserDetails userDetails) {
 		ApiResponse<Void> response;
 		if (userDetails.getUsername() == null) {
 			throw new SessionAuthenticationException("먼저 로그인하여 주세요.");

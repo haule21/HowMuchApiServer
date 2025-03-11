@@ -22,6 +22,7 @@ import howmuch.com.dto.ApiResponse;
 import howmuch.com.dto.IngredientDTO;
 import howmuch.com.service.IngredientService;
 import howmuch.com.vo.IngredientVO;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping(value = "/api/ingredient")
@@ -44,7 +45,7 @@ public class IngredientController {
     }
 	
 	@PostMapping("/modifyingredient")
-    public ResponseEntity<ApiResponse<Void>> ModifyUnit(@RequestBody IngredientVO ingredientVO, @AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity<ApiResponse<Void>> ModifyUnit(@RequestBody @Valid IngredientVO ingredientVO, @AuthenticationPrincipal UserDetails userDetails) {
 		ApiResponse<Void> response;
 		if (userDetails.getUsername() == null) {
 			throw new SessionAuthenticationException("먼저 로그인하여 주세요.");
@@ -56,7 +57,7 @@ public class IngredientController {
     }
 	
 	@PostMapping("/addingredient")
-    public ResponseEntity<ApiResponse<Void>> AddUnit(@RequestBody IngredientVO ingredientVO, @AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity<ApiResponse<Void>> AddUnit(@RequestBody @Valid IngredientVO ingredientVO, @AuthenticationPrincipal UserDetails userDetails) {
 		ApiResponse<Void> response;
 		if (userDetails.getUsername() == null) {
 			throw new SessionAuthenticationException("먼저 로그인하여 주세요.");

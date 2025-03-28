@@ -62,6 +62,7 @@
 - 레시피에 내가 만든 소스와 재료를 등록하고 수정할 수 있어요.
 
 # API 명세서
+[API 명세서 자세히 보기(작성중)](https://app.gitbook.com/o/1JNsFFuLwJ7V278VH8Dk/s/iGmgnyv3FcNpgZ15TTA9/ingredient-api/api-ingredient-getallingredient)
 | Domain | URL | Method | Authority |
 | --- | --- | --- | --- |
 | /api  | /login  | POST | - |
